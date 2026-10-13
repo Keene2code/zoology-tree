@@ -1,0 +1,896 @@
+<title>Zoology Tree</title>
+
+<style>
+  /* ── tokens (cultivation companion palette) ── */
+  :root {
+    --bg:        #EAEDE8;
+    --bg2:       #F4F6F2;
+    --fg:        #1A2418;
+    --fg-muted:  #7A8A78;
+    --accent:    #4A5888;
+    --accent-fg: #ffffff;
+    --ghost:     #9AAA94;
+    --border:    #CDD4CA;
+    --rank-col:  #4A5C48;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:        #141A12;
+      --bg2:       #1C241A;
+      --fg:        #E2E8DF;
+      --fg-muted:  #627060;
+      --accent:    #8890C8;
+      --accent-fg: #141A12;
+      --ghost:     #4A7444;
+      --border:    #2C3C2A;
+      --rank-col:  #9AAA94;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg:        #141A12;
+    --bg2:       #1C241A;
+    --fg:        #E2E8DF;
+    --fg-muted:  #627060;
+    --accent:    #8890C8;
+    --accent-fg: #141A12;
+    --ghost:     #4A7444;
+    --border:    #2C3C2A;
+    --rank-col:  #9AAA94;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 17px;
+    line-height: 1.5;
+    padding-inline: 16px;
+    padding-block: 16px;
+    min-height: 100%;
+  }
+
+  h1 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 1.6rem;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    margin-bottom: 4px;
+  }
+
+  .subtitle {
+    color: var(--fg-muted);
+    font-size: 0.8rem;
+    margin-bottom: 16px;
+  }
+
+  /* ── layout ── */
+  .app {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .tree-panel {
+    flex: 1;
+    min-width: 0;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+  }
+
+  .detail-panel {
+    width: 260px;
+    flex-shrink: 0;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+  }
+
+  @media (max-width: 640px) {
+    .app { flex-direction: column; }
+    .detail-panel { width: 100%; }
+  }
+
+  /* ── tree nodes ── */
+  .tree-node { list-style: none; }
+
+  .tree-node > ul {
+    margin-left: 18px;
+    border-left: 1px solid var(--border);
+    padding-left: 10px;
+    display: none;          /* collapsed by default */
+  }
+
+  .tree-node.open > ul { display: block; }
+
+  .node-row {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    padding: 3px 4px;
+    border-radius: 4px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .node-row:hover { background: var(--border); }
+  .node-row.selected { background: var(--accent); color: var(--accent-fg); }
+  .node-row.selected .rank-badge { color: rgba(255,255,255,0.7); }
+
+  .toggle-icon {
+    font-size: 0.65rem;
+    width: 10px;
+    flex-shrink: 0;
+    color: var(--fg-muted);
+  }
+
+  .node-name { font-weight: 500; font-size: 0.95rem; }
+  .node-name.ghost { color: var(--ghost); font-style: italic; }
+  .node-common { color: var(--fg-muted); font-size: 0.82rem; }
+  .rank-badge {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--rank-col);
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+
+  /* ── detail panel ── */
+  .detail-empty {
+    color: var(--fg-muted);
+    font-size: 0.85rem;
+    font-style: italic;
+  }
+
+  .breadcrumb { display: flex; flex-direction: column; gap: 4px; }
+
+  .bc-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.82rem;
+  }
+
+  .bc-rank {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--rank-col);
+    width: 68px;
+    flex-shrink: 0;
+  }
+
+  .bc-name { font-weight: 500; }
+  .bc-common { color: var(--fg-muted); font-size: 0.78rem; }
+
+  /* ── mode toggle ── */
+  .mode-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .mode-btn {
+    padding: 6px 16px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg2);
+    color: var(--fg);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .mode-btn.active {
+    background: var(--accent);
+    color: var(--accent-fg);
+    border-color: var(--accent);
+  }
+
+  /* ── quiz panel ── */
+  .quiz-panel { display: none; max-width: 560px; }
+  .quiz-panel.visible { display: block; }
+
+  .quiz-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+  }
+
+  .quiz-prompt {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--fg-muted);
+    margin-bottom: 6px;
+  }
+
+  .quiz-species {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+    margin-bottom: 4px;
+  }
+
+  .quiz-common {
+    color: var(--fg-muted);
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+  }
+
+  .quiz-question {
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+
+  .quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .quiz-option {
+    padding: 10px 14px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+
+  .quiz-option:hover:not(:disabled) { background: var(--border); }
+  .quiz-option:disabled { cursor: default; }
+  .quiz-option.correct { background: #d4edda; border-color: #3d6438; color: #1a3a1a; }
+  .quiz-option.wrong   { background: #f8d7da; border-color: #8b2a30; color: #3a1010; }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .quiz-option.correct { background: #1a3a1a; border-color: #6a9864; color: #c8e8c4; }
+    :root:not([data-theme="light"]) .quiz-option.wrong   { background: #3a1010; border-color: #9b4a50; color: #f0c0c4; }
+  }
+
+  .quiz-feedback {
+    margin-top: 14px;
+    font-size: 0.88rem;
+    color: var(--fg-muted);
+    min-height: 1.4em;
+  }
+
+  .quiz-next {
+    margin-top: 16px;
+    padding: 8px 20px;
+    border-radius: 6px;
+    border: none;
+    background: var(--accent);
+    color: var(--accent-fg);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: none;
+  }
+
+  .quiz-score {
+    margin-top: 16px;
+    font-size: 0.82rem;
+    color: var(--fg-muted);
+  }
+</style>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap">
+
+<h1>Vertebrate Zoology — Fish</h1>
+<p class="subtitle">Week 1 · Click any node to expand · Click a species to see its taxonomy</p>
+
+<div class="mode-bar">
+  <button class="mode-btn active" id="btn-browse" onclick="setMode('browse')">Browse</button>
+  <button class="mode-btn"        id="btn-quiz"   onclick="setMode('quiz')">Quiz</button>
+</div>
+
+<div class="app" id="browse-view">
+  <div class="tree-panel">
+    <ul id="tree-root" style="padding:0"></ul>
+  </div>
+  <div class="detail-panel" id="detail-panel">
+    <p class="detail-empty">Select a species to see its full taxonomy.</p>
+  </div>
+</div>
+
+<div class="quiz-panel" id="quiz-view">
+  <div class="quiz-card">
+    <div class="quiz-prompt">Identify the taxon</div>
+    <div class="quiz-species" id="q-species"></div>
+    <div class="quiz-common"  id="q-common"></div>
+    <div class="quiz-question" id="q-question"></div>
+    <div class="quiz-options"  id="q-options"></div>
+    <div class="quiz-feedback" id="q-feedback"></div>
+    <button class="quiz-next" id="q-next" onclick="nextQuestion()">Next question →</button>
+    <div class="quiz-score" id="q-score"></div>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// SECTION 1: THE DATA
+// This is the taxonomy as a nested JS object.
+// Each node has: name, rank, and children (an array of more nodes).
+// Species nodes (leaves) have no children array.
+// ghost: true marks clades with no museum specimens.
+// ─────────────────────────────────────────────
+
+const TREE = {
+  name: "Fishes",
+  rank: "root",
+  children: [
+    {
+      name: "Myxini",
+      rank: "class",
+      common: "hagfishes",
+      children: [
+        {
+          name: "Myxiniformes",
+          rank: "order",
+          children: [
+            {
+              name: "Myxinidae",
+              rank: "family",
+              children: [
+                { name: "Eptatretus stoutii", common: "Pacific hagfish", rank: "species" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      name: "Petromyzonti",
+      rank: "class",
+      common: "lampreys",
+      children: [
+        {
+          name: "Petromyzontiformes",
+          rank: "order",
+          children: [
+            {
+              name: "Petromyzontidae",
+              rank: "family",
+              children: [
+                { name: "Entosphenus tridentatus", common: "Pacific lamprey", rank: "species" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      name: "Chondrichthyes",
+      rank: "class",
+      common: "cartilaginous fishes",
+      children: [
+        {
+          name: "Elasmobranchii",
+          rank: "subclass",
+          common: "sharks, skates, rays",
+          children: [
+            {
+              name: "Squaliformes",
+              rank: "order",
+              common: "sharks",
+              children: [
+                { name: "Squalus acanthias", common: "Spiny dogfish", rank: "species" }
+              ]
+            },
+            {
+              name: "Rajiformes",
+              rank: "order",
+              common: "skates, rays, sawfish",
+              children: [
+                { name: "Raja binoculata", common: "Big skate", rank: "species" }
+              ]
+            }
+          ]
+        },
+        {
+          name: "Holocephali",
+          rank: "subclass",
+          common: "holocephalians",
+          children: [
+            {
+              name: "Chimaeriformes",
+              rank: "order",
+              common: "chimaeras, ratfish",
+              children: [
+                { name: "Hydrolagus colliei", common: "Spotted ratfish", rank: "species" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      name: "Osteichthyes",
+      rank: "superclass",
+      common: "bony fishes",
+      children: [
+        {
+          name: "Actinopterygii",
+          rank: "class",
+          common: "ray-finned fishes",
+          children: [
+            {
+              name: "Chondrostei",
+              rank: "subclass",
+              children: [
+                {
+                  name: "Acipenseriformes",
+                  rank: "order",
+                  common: "sturgeons",
+                  children: [
+                    {
+                      name: "Acipenseridae",
+                      rank: "family",
+                      children: [
+                        { name: "Acipenser transmontanus", common: "White sturgeon", rank: "species" }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              name: "Neopterygii",
+              rank: "subclass",
+              common: "new fin fishes",
+              children: [
+                {
+                  name: "Lepisosteiformes",
+                  rank: "order",
+                  common: "gars",
+                  children: [
+                    {
+                      name: "Lepisosteidae",
+                      rank: "family",
+                      children: [
+                        { name: "Lepisosteus spp.", common: "gars", rank: "species" }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  name: "Amiiformes",
+                  rank: "order",
+                  common: "bowfin",
+                  children: [
+                    {
+                      name: "Amiidae",
+                      rank: "family",
+                      children: [
+                        { name: "Amia calva", common: "Bowfin", rank: "species" }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  name: "Salmoniformes",
+                  rank: "order",
+                  common: "salmon, trout",
+                  children: [
+                    {
+                      name: "Salmonidae",
+                      rank: "family",
+                      children: [
+                        { name: "Salmo spp.", common: "trout", rank: "species" },
+                        { name: "Oncorhynchus kisutch", common: "Coho salmon", rank: "species" },
+                        { name: "Oncorhynchus tshawytscha", common: "Chinook salmon", rank: "species" }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  name: "Cypriniformes",
+                  rank: "order",
+                  common: "minnows, suckers",
+                  children: [
+                    {
+                      name: "Catostomidae",
+                      rank: "family",
+                      common: "suckers",
+                      children: [
+                        { name: "Catostomus platyrhynchus", common: "Mountain sucker", rank: "species" }
+                      ]
+                    },
+                    {
+                      name: "Cyprinidae",
+                      rank: "family",
+                      common: "minnows",
+                      children: [
+                        { name: "Cyprinus carpio", common: "Carp", rank: "species" },
+                        { name: "Ptychocheilus oregonensis", common: "Northern pikeminnow", rank: "species" }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  name: "Siluriformes",
+                  rank: "order",
+                  common: "catfish",
+                  children: [
+                    {
+                      name: "Ictaluridae",
+                      rank: "family",
+                      common: "North American catfish",
+                      children: [
+                        { name: "Ameiurus melas", common: "Black bullhead", rank: "species" }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  name: "Gasterosteiformes",
+                  rank: "order",
+                  common: "sticklebacks",
+                  children: [
+                    {
+                      name: "Gasterosteidae",
+                      rank: "family",
+                      children: [
+                        { name: "Gasterosteus aculeatus", common: "Three-spined stickleback", rank: "species" }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  name: "Osmeriformes",
+                  rank: "order",
+                  common: "smelts",
+                  children: [
+                    {
+                      name: "Osmeridae",
+                      rank: "family",
+                      children: [
+                        { name: "Thaleichthys pacificus", common: "Eulachon", rank: "species" }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  name: "Perciformes",
+                  rank: "order",
+                  common: "perciforms",
+                  children: [
+                    {
+                      name: "Centrarchidae",
+                      rank: "family",
+                      common: "sunfishes, temperate bass",
+                      children: [
+                        { name: "Pomoxis spp.", common: "Crappies", rank: "species" },
+                        { name: "Lepomis spp.", common: "Bluegill", rank: "species" },
+                        { name: "Micropterus salmoides", common: "Largemouth bass", rank: "species" }
+                      ]
+                    },
+                    {
+                      name: "Percidae",
+                      rank: "family",
+                      common: "perches, walleye, darters",
+                      children: [
+                        { name: "Perca flavescens", common: "Yellow perch", rank: "species" }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  name: "Scorpaeniformes",
+                  rank: "order",
+                  common: "rockfish, sculpins",
+                  children: [
+                    {
+                      name: "Cottidae",
+                      rank: "family",
+                      children: [
+                        { name: "Cottus spp.", common: "Sculpins", rank: "species" }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  name: "Pleuronectiformes",
+                  rank: "order",
+                  common: "flatfishes",
+                  children: [
+                    {
+                      name: "Pleuronectidae",
+                      rank: "family",
+                      children: [
+                        { name: "Platichthys stellatus", common: "Starry flounder", rank: "species" }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          name: "Sarcopterygii",
+          rank: "class",
+          common: "coelacanth and lungfishes",
+          ghost: true,
+          note: "No museum specimens — Oregon Zoo has live specimens.",
+          children: []
+        }
+      ]
+    }
+  ]
+};
+
+// ─────────────────────────────────────────────
+// SECTION 2: RENDERING THE TREE
+// We walk the TREE object and build HTML list
+// elements (<li>, <ul>) that match its structure.
+// ─────────────────────────────────────────────
+
+// buildNode takes one node from the data and returns
+// a <li> element representing it (with its children inside).
+function buildNode(node, ancestors) {
+  const li = document.createElement('li');
+  li.className = 'tree-node';
+
+  const isLeaf = !node.children || node.children.length === 0;
+  const path = [...ancestors, node];  // track ancestors for the detail panel
+
+  // The clickable row
+  const row = document.createElement('div');
+  row.className = 'node-row';
+
+  // Toggle icon (▶ / ▼ for expandable, • for leaves)
+  const icon = document.createElement('span');
+  icon.className = 'toggle-icon';
+  icon.textContent = isLeaf ? '•' : '▶';
+  row.appendChild(icon);
+
+  // Name
+  const nameEl = document.createElement('span');
+  nameEl.className = 'node-name' + (node.ghost ? ' ghost' : '');
+  nameEl.textContent = node.name;
+  row.appendChild(nameEl);
+
+  // Common name (if present)
+  if (node.common) {
+    const commonEl = document.createElement('span');
+    commonEl.className = 'node-common';
+    commonEl.textContent = '— ' + node.common;
+    row.appendChild(commonEl);
+  }
+
+  // Rank badge (right-aligned)
+  if (node.rank !== 'root') {
+    const badge = document.createElement('span');
+    badge.className = 'rank-badge';
+    badge.textContent = node.rank;
+    row.appendChild(badge);
+  }
+
+  li.appendChild(row);
+
+  // Build children recursively
+  if (!isLeaf) {
+    const ul = document.createElement('ul');
+    for (const child of node.children) {
+      ul.appendChild(buildNode(child, path));
+    }
+    li.appendChild(ul);
+
+    // Click on an internal node: toggle open/closed
+    row.addEventListener('click', () => {
+      li.classList.toggle('open');
+      icon.textContent = li.classList.contains('open') ? '▼' : '▶';
+    });
+  } else {
+    // Click on a species: show detail panel
+    row.addEventListener('click', () => {
+      showDetail(path);
+      // highlight selected
+      document.querySelectorAll('.node-row.selected')
+        .forEach(el => el.classList.remove('selected'));
+      row.classList.add('selected');
+    });
+  }
+
+  return li;
+}
+
+// ─────────────────────────────────────────────
+// SECTION 3: THE DETAIL PANEL
+// When a species is clicked, we show the full
+// taxonomy breadcrumb on the right.
+// ─────────────────────────────────────────────
+
+function showDetail(path) {
+  const panel = document.getElementById('detail-panel');
+  panel.innerHTML = '';
+
+  const bc = document.createElement('div');
+  bc.className = 'breadcrumb';
+
+  for (const node of path) {
+    if (node.rank === 'root') continue;
+
+    const row = document.createElement('div');
+    row.className = 'bc-row';
+
+    const rankEl = document.createElement('span');
+    rankEl.className = 'bc-rank';
+    rankEl.textContent = node.rank;
+    row.appendChild(rankEl);
+
+    const nameEl = document.createElement('span');
+    nameEl.className = 'bc-name';
+    nameEl.textContent = node.name;
+    row.appendChild(nameEl);
+
+    bc.appendChild(row);
+
+    // Common name on its own line under the species
+    if (node.common && node.rank === 'species') {
+      const commonRow = document.createElement('div');
+      commonRow.className = 'bc-row';
+      commonRow.style.paddingLeft = '74px';
+      const commonEl = document.createElement('span');
+      commonEl.className = 'bc-common';
+      commonEl.textContent = node.common;
+      commonRow.appendChild(commonEl);
+      bc.appendChild(commonRow);
+    }
+  }
+
+  panel.appendChild(bc);
+}
+
+// ─────────────────────────────────────────────
+// SECTION 4: QUIZ MODE
+// ─────────────────────────────────────────────
+
+// flattenSpecies walks the entire tree and returns a flat array.
+// Each entry is { species: node, path: [root…species] }.
+// flatMap is like map, but if the callback returns an array,
+// it flattens one level — perfect for recursive tree walks.
+function flattenSpecies(node, path = []) {
+  const current = [...path, node];
+  if (!node.children || node.children.length === 0) {
+    return node.ghost ? [] : [{ species: node, path: current }];
+  }
+  return node.children.flatMap(child => flattenSpecies(child, current));
+}
+
+const ALL_SPECIES = flattenSpecies(TREE);
+
+// allOfRank collects every unique node name at a given rank across all species.
+// Set is like Python's set — it automatically ignores duplicates.
+function allOfRank(rank) {
+  const seen = new Set();
+  const results = [];
+  for (const { path } of ALL_SPECIES) {
+    for (const node of path) {
+      if (node.rank === rank && !seen.has(node.name)) {
+        seen.add(node.name);
+        results.push(node.name);
+      }
+    }
+  }
+  return results;
+}
+
+// generateQuestion picks a random species and a random rank to ask about.
+// Math.random() gives a decimal between 0 and 1.
+// Math.floor() rounds down to an integer — together they pick a random index.
+function generateQuestion() {
+  const { species, path } = ALL_SPECIES[Math.floor(Math.random() * ALL_SPECIES.length)];
+
+  // Only ask about ranks that actually exist in this species' path
+  const askable = ['class', 'subclass', 'order', 'family']
+    .filter(r => path.some(n => n.rank === r));
+  const rank = askable[Math.floor(Math.random() * askable.length)];
+
+  const correct = path.find(n => n.rank === rank).name;
+
+  // Wrong answers: all other values of this rank, shuffled, take 3
+  // .filter() returns a new array keeping only items where the callback is true
+  // .sort(() => Math.random() - 0.5) is a simple shuffle trick
+  const wrongs = allOfRank(rank)
+    .filter(n => n !== correct)
+    .sort(() => Math.random() - 0.5)
+    .slice(0, 3);
+
+  const options = [correct, ...wrongs].sort(() => Math.random() - 0.5);
+
+  return { species, rank, correct, options };
+}
+
+// Quiz state
+let score = { correct: 0, total: 0 };
+let currentQuestion = null;
+
+function renderQuestion() {
+  currentQuestion = generateQuestion();
+  const { species, rank, options } = currentQuestion;
+
+  document.getElementById('q-species').textContent = species.name;
+  document.getElementById('q-common').textContent  = species.common || '';
+  document.getElementById('q-question').textContent = `What is the ${rank}?`;
+  document.getElementById('q-feedback').textContent = '';
+  document.getElementById('q-next').style.display   = 'none';
+  document.getElementById('q-score').textContent    =
+    score.total > 0 ? `${score.correct} / ${score.total} correct` : '';
+
+  const optionsEl = document.getElementById('q-options');
+  optionsEl.innerHTML = '';  // clear old buttons
+
+  for (const opt of options) {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-option';
+    btn.textContent = opt;
+    btn.addEventListener('click', () => handleAnswer(opt));
+    optionsEl.appendChild(btn);
+  }
+}
+
+function handleAnswer(chosen) {
+  const { correct } = currentQuestion;
+  score.total++;
+
+  // Disable all buttons
+  document.querySelectorAll('.quiz-option').forEach(btn => {
+    btn.disabled = true;
+    if (btn.textContent === correct) btn.classList.add('correct');
+    if (btn.textContent === chosen && chosen !== correct) btn.classList.add('wrong');
+  });
+
+  if (chosen === correct) {
+    score.correct++;
+    document.getElementById('q-feedback').textContent = 'Correct!';
+  } else {
+    document.getElementById('q-feedback').textContent = `Not quite — the ${currentQuestion.rank} is ${correct}.`;
+  }
+
+  document.getElementById('q-next').style.display = 'inline-block';
+  document.getElementById('q-score').textContent  = `${score.correct} / ${score.total} correct`;
+}
+
+function nextQuestion() {
+  renderQuestion();
+}
+
+// Mode switching
+function setMode(mode) {
+  const isBrowse = mode === 'browse';
+  document.getElementById('browse-view').style.display = isBrowse ? 'flex'  : 'none';
+  document.getElementById('quiz-view').classList.toggle('visible', !isBrowse);
+  document.getElementById('btn-browse').classList.toggle('active',  isBrowse);
+  document.getElementById('btn-quiz').classList.toggle('active',   !isBrowse);
+  if (!isBrowse && score.total === 0) renderQuestion();
+}
+
+// ─────────────────────────────────────────────
+// BOOT: render the tree into the page
+// ─────────────────────────────────────────────
+
+const root = document.getElementById('tree-root');
+// Render the top-level children of the root node
+for (const child of TREE.children) {
+  root.appendChild(buildNode(child, [TREE]));
+}
+</script>
