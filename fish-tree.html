@@ -1,7 +1,6 @@
-<title>Zoology Tree</title>
+<title>Vertebrate Zoology</title>
 
 <style>
-  /* ── tokens (cultivation companion palette) ── */
   :root {
     --bg:        #EAEDE8;
     --bg2:       #F4F6F2;
@@ -65,7 +64,41 @@
   .subtitle {
     color: var(--fg-muted);
     font-size: 0.8rem;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
+  }
+
+  /* ── filter + mode bars ── */
+  .filter-bar, .mode-bar {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .bar-label {
+    font-size: 0.78rem;
+    color: var(--fg-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-right: 2px;
+  }
+
+  .filter-btn, .mode-btn {
+    padding: 6px 16px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg2);
+    color: var(--fg);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .filter-btn.active, .mode-btn.active {
+    background: var(--accent);
+    color: var(--accent-fg);
+    border-color: var(--accent);
   }
 
   /* ── layout ── */
@@ -85,7 +118,7 @@
   }
 
   .detail-panel {
-    width: 260px;
+    width: 280px;
     flex-shrink: 0;
     background: var(--bg2);
     border: 1px solid var(--border);
@@ -105,7 +138,7 @@
     margin-left: 18px;
     border-left: 1px solid var(--border);
     padding-left: 10px;
-    display: none;          /* collapsed by default */
+    display: none;
   }
 
   .tree-node.open > ul { display: block; }
@@ -169,36 +202,67 @@
   }
 
   .bc-name { font-weight: 500; }
-  .bc-common { color: var(--fg-muted); font-size: 0.78rem; }
+  .bc-common { color: var(--fg-muted); font-size: 0.78rem; font-style: italic; }
 
-  /* ── mode toggle ── */
-  .mode-bar {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 16px;
+  .adaptations {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
   }
 
-  .mode-btn {
-    padding: 6px 16px;
+  .adapt-title {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--rank-col);
+    margin-bottom: 6px;
+  }
+
+  .adapt-item {
+    font-size: 0.8rem;
+    color: var(--fg-muted);
+    padding-left: 10px;
+    position: relative;
+    margin-bottom: 4px;
+    line-height: 1.4;
+  }
+
+  .adapt-item::before {
+    content: '·';
+    position: absolute;
+    left: 2px;
+  }
+
+  /* ── quiz panel ── */
+  .quiz-panel { display: none; max-width: 560px; }
+  .quiz-panel.visible { display: block; }
+
+  .quiz-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+
+  .rank-select {
+    display: none;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .rank-select.visible { display: flex; }
+
+  .rank-select select {
+    padding: 5px 10px;
     border-radius: 6px;
     border: 1px solid var(--border);
     background: var(--bg2);
     color: var(--fg);
     font-family: 'DM Sans', sans-serif;
     font-size: 0.88rem;
-    font-weight: 500;
     cursor: pointer;
   }
-
-  .mode-btn.active {
-    background: var(--accent);
-    color: var(--accent-fg);
-    border-color: var(--accent);
-  }
-
-  /* ── quiz panel ── */
-  .quiz-panel { display: none; max-width: 560px; }
-  .quiz-panel.visible { display: block; }
 
   .quiz-card {
     background: var(--bg2);
@@ -222,9 +286,10 @@
     margin-bottom: 4px;
   }
 
-  .quiz-common {
+  .quiz-secondary {
     color: var(--fg-muted);
     font-size: 0.9rem;
+    font-style: italic;
     margin-bottom: 20px;
   }
 
@@ -293,8 +358,15 @@
 
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap">
 
-<h1>Vertebrate Zoology — Fish</h1>
-<p class="subtitle">Week 1 · Click any node to expand · Click a species to see its taxonomy</p>
+<h1>Vertebrate Zoology — Study Tree</h1>
+<p class="subtitle">Click any node to expand · Select a species for taxonomy + adaptations</p>
+
+<div class="filter-bar">
+  <span class="bar-label">Group:</span>
+  <button class="filter-btn active" id="filter-all"   onclick="setFilter('all')">All</button>
+  <button class="filter-btn"        id="filter-fish"  onclick="setFilter('fish')">Fish</button>
+  <button class="filter-btn"        id="filter-birds" onclick="setFilter('birds')">Birds</button>
+</div>
 
 <div class="mode-bar">
   <button class="mode-btn active" id="btn-browse" onclick="setMode('browse')">Browse</button>
@@ -306,18 +378,31 @@
     <ul id="tree-root" style="padding:0"></ul>
   </div>
   <div class="detail-panel" id="detail-panel">
-    <p class="detail-empty">Select a species to see its full taxonomy.</p>
+    <p class="detail-empty">Select a species to see its taxonomy.</p>
   </div>
 </div>
 
 <div class="quiz-panel" id="quiz-view">
+  <div class="quiz-controls">
+    <span class="bar-label">Mode:</span>
+    <button class="mode-btn active" id="qm-random"   onclick="setQuizMode('random')">Random</button>
+    <button class="mode-btn"        id="qm-targeted" onclick="setQuizMode('targeted')">Targeted</button>
+    <span class="rank-select" id="rank-select">
+      <span class="bar-label" style="margin-left:8px">Level:</span>
+      <select id="rank-dropdown" onchange="setTargetRank(this.value)">
+        <option value="order">Order</option>
+        <option value="class">Class</option>
+        <option value="family">Family</option>
+      </select>
+    </span>
+  </div>
   <div class="quiz-card">
     <div class="quiz-prompt">Identify the taxon</div>
-    <div class="quiz-species" id="q-species"></div>
-    <div class="quiz-common"  id="q-common"></div>
-    <div class="quiz-question" id="q-question"></div>
-    <div class="quiz-options"  id="q-options"></div>
-    <div class="quiz-feedback" id="q-feedback"></div>
+    <div class="quiz-species"   id="q-species"></div>
+    <div class="quiz-secondary" id="q-secondary"></div>
+    <div class="quiz-question"  id="q-question"></div>
+    <div class="quiz-options"   id="q-options"></div>
+    <div class="quiz-feedback"  id="q-feedback"></div>
     <button class="quiz-next" id="q-next" onclick="nextQuestion()">Next question →</button>
     <div class="quiz-score" id="q-score"></div>
   </div>
@@ -325,350 +410,506 @@
 
 <script>
 // ─────────────────────────────────────────────
-// SECTION 1: THE DATA
-// This is the taxonomy as a nested JS object.
-// Each node has: name, rank, and children (an array of more nodes).
-// Species nodes (leaves) have no children array.
-// ghost: true marks clades with no museum specimens.
+// SECTION 1: DATA
+// Each node: name, rank, common (optional),
+// group ("fish"|"birds" on top-level nodes only),
+// adaptations (array, on species only),
+// ghost: true for clades with no specimens.
 // ─────────────────────────────────────────────
 
 const TREE = {
-  name: "Fishes",
-  rank: "root",
+  name: "Vertebrates", rank: "root",
   children: [
-    {
-      name: "Myxini",
-      rank: "class",
-      common: "hagfishes",
-      children: [
-        {
-          name: "Myxiniformes",
-          rank: "order",
-          children: [
-            {
-              name: "Myxinidae",
-              rank: "family",
-              children: [
-                { name: "Eptatretus stoutii", common: "Pacific hagfish", rank: "species" }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      name: "Petromyzonti",
-      rank: "class",
-      common: "lampreys",
-      children: [
-        {
-          name: "Petromyzontiformes",
-          rank: "order",
-          children: [
-            {
-              name: "Petromyzontidae",
-              rank: "family",
-              children: [
-                { name: "Entosphenus tridentatus", common: "Pacific lamprey", rank: "species" }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      name: "Chondrichthyes",
-      rank: "class",
-      common: "cartilaginous fishes",
-      children: [
-        {
-          name: "Elasmobranchii",
-          rank: "subclass",
-          common: "sharks, skates, rays",
-          children: [
-            {
-              name: "Squaliformes",
-              rank: "order",
-              common: "sharks",
-              children: [
-                { name: "Squalus acanthias", common: "Spiny dogfish", rank: "species" }
-              ]
-            },
-            {
-              name: "Rajiformes",
-              rank: "order",
-              common: "skates, rays, sawfish",
-              children: [
-                { name: "Raja binoculata", common: "Big skate", rank: "species" }
-              ]
-            }
-          ]
-        },
-        {
-          name: "Holocephali",
-          rank: "subclass",
-          common: "holocephalians",
-          children: [
-            {
-              name: "Chimaeriformes",
-              rank: "order",
-              common: "chimaeras, ratfish",
-              children: [
-                { name: "Hydrolagus colliei", common: "Spotted ratfish", rank: "species" }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      name: "Osteichthyes",
-      rank: "superclass",
-      common: "bony fishes",
-      children: [
-        {
-          name: "Actinopterygii",
-          rank: "class",
-          common: "ray-finned fishes",
-          children: [
-            {
-              name: "Chondrostei",
-              rank: "subclass",
-              children: [
-                {
-                  name: "Acipenseriformes",
-                  rank: "order",
-                  common: "sturgeons",
-                  children: [
-                    {
-                      name: "Acipenseridae",
-                      rank: "family",
-                      children: [
-                        { name: "Acipenser transmontanus", common: "White sturgeon", rank: "species" }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              name: "Neopterygii",
-              rank: "subclass",
-              common: "new fin fishes",
-              children: [
-                {
-                  name: "Lepisosteiformes",
-                  rank: "order",
-                  common: "gars",
-                  children: [
-                    {
-                      name: "Lepisosteidae",
-                      rank: "family",
-                      children: [
-                        { name: "Lepisosteus spp.", common: "gars", rank: "species" }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  name: "Amiiformes",
-                  rank: "order",
-                  common: "bowfin",
-                  children: [
-                    {
-                      name: "Amiidae",
-                      rank: "family",
-                      children: [
-                        { name: "Amia calva", common: "Bowfin", rank: "species" }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  name: "Salmoniformes",
-                  rank: "order",
-                  common: "salmon, trout",
-                  children: [
-                    {
-                      name: "Salmonidae",
-                      rank: "family",
-                      children: [
-                        { name: "Salmo spp.", common: "trout", rank: "species" },
-                        { name: "Oncorhynchus kisutch", common: "Coho salmon", rank: "species" },
-                        { name: "Oncorhynchus tshawytscha", common: "Chinook salmon", rank: "species" }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  name: "Cypriniformes",
-                  rank: "order",
-                  common: "minnows, suckers",
-                  children: [
-                    {
-                      name: "Catostomidae",
-                      rank: "family",
-                      common: "suckers",
-                      children: [
-                        { name: "Catostomus platyrhynchus", common: "Mountain sucker", rank: "species" }
-                      ]
-                    },
-                    {
-                      name: "Cyprinidae",
-                      rank: "family",
-                      common: "minnows",
-                      children: [
-                        { name: "Cyprinus carpio", common: "Carp", rank: "species" },
-                        { name: "Ptychocheilus oregonensis", common: "Northern pikeminnow", rank: "species" }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  name: "Siluriformes",
-                  rank: "order",
-                  common: "catfish",
-                  children: [
-                    {
-                      name: "Ictaluridae",
-                      rank: "family",
-                      common: "North American catfish",
-                      children: [
-                        { name: "Ameiurus melas", common: "Black bullhead", rank: "species" }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  name: "Gasterosteiformes",
-                  rank: "order",
-                  common: "sticklebacks",
-                  children: [
-                    {
-                      name: "Gasterosteidae",
-                      rank: "family",
-                      children: [
-                        { name: "Gasterosteus aculeatus", common: "Three-spined stickleback", rank: "species" }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  name: "Osmeriformes",
-                  rank: "order",
-                  common: "smelts",
-                  children: [
-                    {
-                      name: "Osmeridae",
-                      rank: "family",
-                      children: [
-                        { name: "Thaleichthys pacificus", common: "Eulachon", rank: "species" }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  name: "Perciformes",
-                  rank: "order",
-                  common: "perciforms",
-                  children: [
-                    {
-                      name: "Centrarchidae",
-                      rank: "family",
-                      common: "sunfishes, temperate bass",
-                      children: [
-                        { name: "Pomoxis spp.", common: "Crappies", rank: "species" },
-                        { name: "Lepomis spp.", common: "Bluegill", rank: "species" },
-                        { name: "Micropterus salmoides", common: "Largemouth bass", rank: "species" }
-                      ]
-                    },
-                    {
-                      name: "Percidae",
-                      rank: "family",
-                      common: "perches, walleye, darters",
-                      children: [
-                        { name: "Perca flavescens", common: "Yellow perch", rank: "species" }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  name: "Scorpaeniformes",
-                  rank: "order",
-                  common: "rockfish, sculpins",
-                  children: [
-                    {
-                      name: "Cottidae",
-                      rank: "family",
-                      children: [
-                        { name: "Cottus spp.", common: "Sculpins", rank: "species" }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  name: "Pleuronectiformes",
-                  rank: "order",
-                  common: "flatfishes",
-                  children: [
-                    {
-                      name: "Pleuronectidae",
-                      rank: "family",
-                      children: [
-                        { name: "Platichthys stellatus", common: "Starry flounder", rank: "species" }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          name: "Sarcopterygii",
-          rank: "class",
-          common: "coelacanth and lungfishes",
-          ghost: true,
-          note: "No museum specimens — Oregon Zoo has live specimens.",
-          children: []
-        }
-      ]
-    }
-  ]
+
+  // ── FISH ─────────────────────────────────
+  {
+    name: "Myxini", rank: "class", common: "hagfishes", group: "fish",
+    children: [{ name: "Myxiniformes", rank: "order", children: [
+      { name: "Myxinidae", rank: "family", children: [
+        { name: "Eptatretus stoutii", common: "Pacific hagfish", rank: "species" }
+      ]}
+    ]}]
+  },
+  {
+    name: "Petromyzonti", rank: "class", common: "lampreys", group: "fish",
+    children: [{ name: "Petromyzontiformes", rank: "order", children: [
+      { name: "Petromyzontidae", rank: "family", children: [
+        { name: "Entosphenus tridentatus", common: "Pacific lamprey", rank: "species" }
+      ]}
+    ]}]
+  },
+  {
+    name: "Chondrichthyes", rank: "class", common: "cartilaginous fishes", group: "fish",
+    children: [
+      { name: "Elasmobranchii", rank: "subclass", common: "sharks, skates, rays", children: [
+        { name: "Squaliformes", rank: "order", common: "sharks", children: [
+          { name: "Squalidae", rank: "family", children: [
+            { name: "Squalus acanthias", common: "Spiny dogfish", rank: "species" }
+          ]}
+        ]},
+        { name: "Rajiformes", rank: "order", common: "skates, rays", children: [
+          { name: "Rajidae", rank: "family", children: [
+            { name: "Raja binoculata", common: "Big skate", rank: "species" }
+          ]}
+        ]}
+      ]},
+      { name: "Holocephali", rank: "subclass", common: "chimaeras", children: [
+        { name: "Chimaeriformes", rank: "order", children: [
+          { name: "Chimaeridae", rank: "family", children: [
+            { name: "Hydrolagus colliei", common: "Spotted ratfish", rank: "species" }
+          ]}
+        ]}
+      ]}
+    ]
+  },
+  {
+    name: "Osteichthyes", rank: "superclass", common: "bony fishes", group: "fish",
+    children: [
+      { name: "Actinopterygii", rank: "class", common: "ray-finned fishes", children: [
+        { name: "Chondrostei", rank: "subclass", children: [
+          { name: "Acipenseriformes", rank: "order", common: "sturgeons", children: [
+            { name: "Acipenseridae", rank: "family", children: [
+              { name: "Acipenser transmontanus", common: "White sturgeon", rank: "species" }
+            ]}
+          ]}
+        ]},
+        { name: "Neopterygii", rank: "subclass", common: "new fin fishes", children: [
+          { name: "Lepisosteiformes", rank: "order", common: "gars", children: [
+            { name: "Lepisosteidae", rank: "family", children: [
+              { name: "Lepisosteus spp.", common: "Gars", rank: "species" }
+            ]}
+          ]},
+          { name: "Amiiformes", rank: "order", common: "bowfin", children: [
+            { name: "Amiidae", rank: "family", children: [
+              { name: "Amia calva", common: "Bowfin", rank: "species" }
+            ]}
+          ]},
+          { name: "Salmoniformes", rank: "order", common: "salmon, trout", children: [
+            { name: "Salmonidae", rank: "family", children: [
+              { name: "Salmo spp.", common: "Trout", rank: "species" },
+              { name: "Oncorhynchus kisutch", common: "Coho salmon", rank: "species" },
+              { name: "Oncorhynchus tshawytscha", common: "Chinook salmon", rank: "species" }
+            ]}
+          ]},
+          { name: "Cypriniformes", rank: "order", common: "minnows, suckers", children: [
+            { name: "Catostomidae", rank: "family", common: "suckers", children: [
+              { name: "Catostomus platyrhynchus", common: "Mountain sucker", rank: "species" }
+            ]},
+            { name: "Cyprinidae", rank: "family", common: "minnows", children: [
+              { name: "Cyprinus carpio", common: "Carp", rank: "species" },
+              { name: "Ptychocheilus oregonensis", common: "Northern pikeminnow", rank: "species" }
+            ]}
+          ]},
+          { name: "Siluriformes", rank: "order", common: "catfish", children: [
+            { name: "Ictaluridae", rank: "family", children: [
+              { name: "Ameiurus melas", common: "Black bullhead", rank: "species" }
+            ]}
+          ]},
+          { name: "Gasterosteiformes", rank: "order", common: "sticklebacks", children: [
+            { name: "Gasterosteidae", rank: "family", children: [
+              { name: "Gasterosteus aculeatus", common: "Three-spined stickleback", rank: "species" }
+            ]}
+          ]},
+          { name: "Osmeriformes", rank: "order", common: "smelts", children: [
+            { name: "Osmeridae", rank: "family", children: [
+              { name: "Thaleichthys pacificus", common: "Eulachon", rank: "species" }
+            ]}
+          ]},
+          { name: "Perciformes", rank: "order", common: "perciforms", children: [
+            { name: "Centrarchidae", rank: "family", common: "sunfishes", children: [
+              { name: "Pomoxis spp.", common: "Crappies", rank: "species" },
+              { name: "Lepomis spp.", common: "Bluegill", rank: "species" },
+              { name: "Micropterus salmoides", common: "Largemouth bass", rank: "species" }
+            ]},
+            { name: "Percidae", rank: "family", common: "perches", children: [
+              { name: "Perca flavescens", common: "Yellow perch", rank: "species" }
+            ]}
+          ]},
+          { name: "Scorpaeniformes", rank: "order", common: "rockfish, sculpins", children: [
+            { name: "Cottidae", rank: "family", children: [
+              { name: "Cottus spp.", common: "Sculpins", rank: "species" }
+            ]}
+          ]},
+          { name: "Pleuronectiformes", rank: "order", common: "flatfishes", children: [
+            { name: "Pleuronectidae", rank: "family", children: [
+              { name: "Platichthys stellatus", common: "Starry flounder", rank: "species" }
+            ]}
+          ]}
+        ]}
+      ]},
+      { name: "Sarcopterygii", rank: "class", common: "coelacanth and lungfishes",
+        ghost: true, note: "No museum specimens — Oregon Zoo has live specimens.", children: [] }
+    ]
+  },
+
+  // ── BIRDS ────────────────────────────────
+  {
+    name: "Aves", rank: "class", common: "birds", group: "birds",
+    children: [
+      // Anseriformes
+      { name: "Anseriformes", rank: "order", common: "geese, swans, ducks", children: [
+        { name: "Anatidae", rank: "family", common: "waterfowl", children: [
+          { name: "Branta canadensis", common: "Canada Goose", rank: "species",
+            adaptations: ["Long black neck with white cheek patch", "Smooth slope from bill to forehead (vs. steep in Cackling Goose)"] },
+          { name: "Branta hutchinsii", common: "Cackling Goose", rank: "species",
+            adaptations: ["Stubbier bill and more rounded head than Canada Goose", "Steep slope from bill to forehead; smaller and more delicate body"] },
+          { name: "Anas platyrhynchos", common: "Mallard", rank: "species",
+            adaptations: ["Sexually dimorphic — males with iridescent green head and black curl-tail", "Ancestor of most domestic duck breeds"] },
+          { name: "Spatula clypeata", common: "Northern Shoveler", rank: "species",
+            adaptations: ["Large spoon-shaped bill with pectinate (comb-like) edges for filter-feeding", "Sexually dimorphic in both plumage and bill function"] },
+          { name: "Mareca americana", common: "American Wigeon", rank: "species",
+            adaptations: ["Unusually high vegetation diet for a duck", "Males with bright green eye patch and white crown"] },
+          { name: "Anas acuta", common: "Northern Pintail", rank: "species",
+            adaptations: ["Long, pointed tail in males is the key field mark", "Slender, elegant body compared to other dabbling ducks"] },
+          { name: "Bucephala albeola", common: "Bufflehead", rank: "species",
+            adaptations: ["North America's smallest diving duck", "Nests almost exclusively in old Northern Flicker cavities"] },
+          { name: "Mergus merganser", common: "Common Merganser", rank: "species",
+            adaptations: ["Serrated (hooked) bill for gripping slippery fish", "Often nests in large woodpecker-made cavities; overwinters in mixed-species flocks"] },
+          { name: "Aix sponsa", common: "Wood Duck", rank: "species",
+            adaptations: ["Clawed feet allow perching and gripping tree branches — rare among ducks", "Males ornately iridescent chestnut and green"] },
+          { name: "Anas crecca", common: "Green-winged Teal", rank: "species",
+            adaptations: ["North America's smallest dabbling duck", "Deep green wing patch visible in flight in both sexes"] }
+        ]}
+      ]},
+      // Galliformes
+      { name: "Galliformes", rank: "order", common: "quail, grouse, turkey", children: [
+        { name: "Odontophoridae", rank: "family", common: "New World quail", children: [
+          { name: "Callipepla californica", common: "California Quail", rank: "species",
+            adaptations: ["Distinctive teardrop crest in both sexes", "Highly social in coveys outside breeding season"] }
+        ]},
+        { name: "Phasianidae", rank: "family", common: "grouse, turkey", children: [
+          { name: "Bonasa umbellus", common: "Ruffed Grouse", rank: "species",
+            adaptations: ["Displaying males poof out a collar of black ruffled feathers", "Cryptic dappled reddish-gray plumage"] },
+          { name: "Centrocercus urophasianus", common: "Greater Sage Grouse", rank: "species",
+            adaptations: ["Males inflate bulbous yellow air sacs and fan a starburst tail in mating displays", "Sexually dimorphic; females smaller with diffuse markings; sagebrush obligate"] }
+        ]}
+      ]},
+      // Gaviiformes
+      { name: "Gaviiformes", rank: "order", common: "loons", children: [
+        { name: "Gaviidae", rank: "family", children: [
+          { name: "Gavia immer", common: "Common Loon", rank: "species",
+            adaptations: ["Solid (non-hollow) bones reduce buoyancy, enabling rapid dives", "Legs positioned far back on body — agile swimmer but awkward on land", "Red eyes"] }
+        ]}
+      ]},
+      // Podicipediformes
+      { name: "Podicipediformes", rank: "order", common: "grebes", children: [
+        { name: "Podicipedidae", rank: "family", children: [
+          { name: "Podilymbus podiceps", common: "Pied-billed Grebe", rank: "species",
+            adaptations: ["Lobed toes (not fully webbed), shared with coots", "Legs far back on body; no visible tail", "Can compress plumage to control buoyancy and sink quietly"] },
+          { name: "Aechmophorus occidentalis", common: "Western Grebe", rank: "species",
+            adaptations: ["Swallows own feathers while preening — may protect stomach lining from fish bones", "Rarely comes ashore; lobed toes; crisp black-and-white with red eye"] }
+        ]}
+      ]},
+      // Procellariiformes
+      { name: "Procellariiformes", rank: "order", common: "tubenoses, albatrosses, shearwaters", children: [
+        { name: "Diomedeidae", rank: "family", common: "albatrosses", children: [
+          { name: "Phoebastria nigripes", common: "Black-footed Albatross", rank: "species",
+            adaptations: ["Tubular nostrils (Tubinares) for salt excretion and prey detection by smell", "Pairs bond for life; very long-lived", "Narrow wings for effortless soaring over open ocean"] }
+        ]},
+        { name: "Procellariidae", rank: "family", common: "shearwaters", children: [
+          { name: "Ardenna grisea", common: "Sooty Shearwater", rank: "species",
+            adaptations: ["Flies up to 1,000 miles per day; dives over 200 ft deep", "Tubular nostrils (tube-nose)", "Silvery flash on underwings in flight"] }
+        ]}
+      ]},
+      // Suliformes
+      { name: "Suliformes", rank: "order", common: "cormorants, boobies", children: [
+        { name: "Phalacrocoracidae", rank: "family", common: "cormorants", children: [
+          { name: "Nannopterum auritum", common: "Double-crested Cormorant", rank: "species",
+            adaptations: ["Does not waterproof feathers — allows deeper diving but forces wing-spreading to dry", "Found posing with wings spread after diving sessions", "Builds nests from highly variable materials including other bird carcasses"] }
+        ]}
+      ]},
+      // Pelecaniformes
+      { name: "Pelecaniformes", rank: "order", common: "pelicans, herons, egrets", children: [
+        { name: "Pelecanidae", rank: "family", common: "pelicans", children: [
+          { name: "Pelecanus occidentalis", common: "Brown Pelican", rank: "species",
+            adaptations: ["Modified bill with large throat pouch for scooping fish", "Nearly extirpated in North America by DDT; fully recovered", "White head turns golden during breeding season"] }
+        ]},
+        { name: "Ardeidae", rank: "family", common: "herons, egrets, bitterns", children: [
+          { name: "Ardea herodias", common: "Great Blue Heron", rank: "species",
+            adaptations: ["Coiled S-curve neck for rapid strike", "Hunts inland as well as in wetlands — takes small mammals and reptiles", "Usually flies with neck tucked in (unlike cranes, which fly neck-out)"] },
+          { name: "Ardea alba", common: "Great Egret", rank: "species",
+            adaptations: ["Breeding adults develop showy aigrette plumes", "All-white with yellow bill and black legs; S-curve neck; hunts like a heron"] },
+          { name: "Botaurus lentiginosus", common: "American Bittern", rank: "species",
+            adaptations: ["Vertical breast stripes blend with reed beds and cattails", "Freezes with bill pointing up to camouflage among vegetation", "Black streak extending from below the eye down the neck"] }
+        ]}
+      ]},
+      // Accipitriformes
+      { name: "Accipitriformes", rank: "order", common: "hawks, eagles, vultures, osprey", children: [
+        { name: "Cathartidae", rank: "family", common: "New World vultures", children: [
+          { name: "Cathartes aura", common: "Turkey Vulture", rank: "species",
+            adaptations: ["V-shaped soaring silhouette; rocks in imperfect circles", "Unfeathered head for hygiene while feeding in carcasses", "Highly acidic digestive system neutralizes botulism; lacks vocal organs"] }
+        ]},
+        { name: "Accipitridae", rank: "family", common: "hawks, eagles, kites", children: [
+          { name: "Buteo jamaicensis", common: "Red-tailed Hawk", rank: "species",
+            adaptations: ["Brick-red tail in adults is the key field mark", "Most common hawk in North America; broad wings for soaring over open areas"] },
+          { name: "Circus hudsonius", common: "Northern Harrier", rank: "species",
+            adaptations: ["Owl-like facial disc funnels sound for hunting by ear over marshes", "Low glides with wings held in a V; white rump patch", "Sexually dimorphic — males gray, females brown"] },
+          { name: "Astur cooperii", common: "Cooper's Hawk", rank: "species",
+            adaptations: ["Long rounded tail for maneuvering through dense vegetation", "Accipiter body plan: short wings, long tail for agility in forests"] },
+          { name: "Aquila chrysaetos", common: "Golden Eagle", rank: "species",
+            adaptations: ["Gold feathers on head and nape", "Among the largest and fastest raptors in North America; occasionally takes livestock"] }
+        ]},
+        { name: "Pandionidae", rank: "family", common: "osprey", children: [
+          { name: "Pandion haliaetus", common: "Osprey", rank: "species",
+            adaptations: ["Only raptor that feeds exclusively on live fish", "Reversible outer toe grips slippery fish from two sides", "Plunges feet-first into water; strongly hooked black bill"] }
+        ]}
+      ]},
+      // Falconiformes
+      { name: "Falconiformes", rank: "order", common: "falcons", children: [
+        { name: "Falconidae", rank: "family", children: [
+          { name: "Falco peregrinus", common: "Peregrine Falcon", rank: "species",
+            adaptations: ["Fastest bird in the world in a stoop (dive), exceeding 320 km/h", "Malar stripe present — diagnostic of all falcons", "Hunts other birds in high-speed aerial pursuits"] },
+          { name: "Falco sparverius", common: "American Kestrel", rank: "species",
+            adaptations: ["North America's smallest falcon", "Sexually dimorphic — males have blue-gray wings, females are rusty", "One of the most colorful raptors; often hunts from perches or while hovering"] }
+        ]}
+      ]},
+      // Gruiformes
+      { name: "Gruiformes", rank: "order", common: "cranes, rails, coots", children: [
+        { name: "Gruidae", rank: "family", common: "cranes", children: [
+          { name: "Antigone canadensis", common: "Sandhill Crane", rank: "species",
+            adaptations: ["Flies with neck fully extended — unlike herons, which tuck the neck in", "Performs elaborate dancing displays; crimson cap", "'Bustle' of feathers droops over tail base while walking"] }
+        ]},
+        { name: "Rallidae", rank: "family", common: "rails, coots", children: [
+          { name: "Fulica americana", common: "American Coot", rank: "species",
+            adaptations: ["Lobed (not webbed) toes — unique among waterbirds, shared with grebes", "Bobs head rhythmically while swimming", "White bill tipped black; red eye; plump dark body"] }
+        ]}
+      ]},
+      // Charadriiformes
+      { name: "Charadriiformes", rank: "order", common: "plovers, sandpipers, gulls, alcids", children: [
+        { name: "Charadriidae", rank: "family", common: "plovers", children: [
+          { name: "Charadrius vociferus", common: "Killdeer", rank: "species",
+            adaptations: ["Performs broken-wing distraction display to lead predators away from ground nest", "Two distinctive black breast bands", "Nests on open ground including parking lots and gravel rooftops"] }
+        ]},
+        { name: "Recurvirostridae", rank: "family", common: "stilts, avocets", children: [
+          { name: "Recurvirostra americana", common: "American Avocet", rank: "species",
+            adaptations: ["Long upturned bill for sweeping through water", "Alarm calls create a Doppler effect to confuse predators about location", "Can act as brood parasite; rusty head and neck in breeding season"] }
+        ]},
+        { name: "Laridae", rank: "family", common: "gulls, terns", children: [
+          { name: "Larus delawarensis", common: "Ring-billed Gull", rank: "species",
+            adaptations: ["Named for the black ring near the bill tip", "Often returns to breed at the colony where it hatched", "Most common gull seen inland"] },
+          { name: "Larus californicus", common: "California Gull", rank: "species",
+            adaptations: ["Dark eyes (vs. pale eyes in Ring-billed Gull)", "Red spot on lower bill; diffuse black at bill tip — no clean ring", "Overwinters at coast; common inland"] }
+        ]},
+        { name: "Alcidae", rank: "family", common: "murres, puffins, auklets", children: [
+          { name: "Uria aalge", common: "Common Murre", rank: "species",
+            adaptations: ["Uses wings (not feet) for underwater propulsion — convergent with penguins", "Nests in dense colonies on steep cliff surfaces with no nest material", "Pear-shaped egg rolls in a circle rather than off the ledge"] }
+        ]}
+      ]},
+      // Columbiformes
+      { name: "Columbiformes", rank: "order", common: "pigeons, doves", children: [
+        { name: "Columbidae", rank: "family", children: [
+          { name: "Columba livia", common: "Rock Pigeon", rank: "species",
+            adaptations: ["Produces crop milk for chicks — unique to pigeons, doves, and flamingos", "Highly variable plumage; green-purple iridescence on neck"] },
+          { name: "Zenaida macroura", common: "Mourning Dove", rank: "species",
+            adaptations: ["One of the most abundant birds in the USA", "Fan-shaped tail with large white tips visible in flight; produces crop milk"] },
+          { name: "Patagioenas fasciata", common: "Band-tailed Pigeon", rank: "species",
+            adaptations: ["White crescent on nape; pale band at tail tip", "Forms large flocks in coniferous forests; feeds on seeds and fruits"] }
+        ]}
+      ]},
+      // Strigiformes
+      { name: "Strigiformes", rank: "order", common: "owls", children: [
+        { name: "Tytonidae", rank: "family", common: "barn owls", children: [
+          { name: "Tyto furcata", common: "Barn Owl", rank: "species",
+            adaptations: ["Heart-shaped facial disc — distinguishes Tytonidae from all other owls", "Asymmetric ear placement for pinpoint 3D sound localization; strictly nocturnal", "Hunts in open meadows and agricultural areas"] }
+        ]},
+        { name: "Strigidae", rank: "family", common: "typical owls", children: [
+          { name: "Bubo virginianus", common: "Great Horned Owl", rank: "species",
+            adaptations: ["Plumicorns (feather tufts — not true ears)", "Eyes fixed in skull; head rotates ~270°; back-combed leading primaries for near-silent flight", "Widest diet of any North American owl; apex predator of the owl guild"] },
+          { name: "Strix occidentalis caurina", common: "Northern Spotted Owl", rank: "species",
+            adaptations: ["Old-growth forest specialist; no plumicorns", "Threatened by range expansion of invasive Barred Owl", "Prominent white 'X' between eyes; round head"] },
+          { name: "Strix varia", common: "Barred Owl", rank: "species",
+            adaptations: ["Dark eyes — unlike most owls, which have yellow eyes", "Range expanding rapidly westward, competing with and hybridizing with Spotted Owl", "Still prey to Great Horned Owl despite being aggressive"] }
+        ]}
+      ]},
+      // Apodiformes
+      { name: "Apodiformes", rank: "order", common: "swifts, hummingbirds", children: [
+        { name: "Trochilidae", rank: "family", common: "hummingbirds", children: [
+          { name: "Calypte anna", common: "Anna's Hummingbird", rank: "species",
+            adaptations: ["Iridescent rose-pink gorget and crown in males", "Males perform steep dive-bomb courtship display (30+ m in the air)", "Incredibly fast wingbeats and heartbeat; long nectar-feeding bill"] },
+          { name: "Selasphorus rufus", common: "Rufous Hummingbird", rank: "species",
+            adaptations: ["Males vivid orange-red — among the most colorful hummingbirds", "Long migration relative to body size", "Tail tapers to a point when folded; short wings"] }
+        ]}
+      ]},
+      // Coraciiformes
+      { name: "Coraciiformes", rank: "order", common: "kingfishers", children: [
+        { name: "Alcedinidae", rank: "family", common: "kingfishers", children: [
+          { name: "Megaceryle alcyon", common: "Belted Kingfisher", rank: "species",
+            adaptations: ["Hovers over water then plunges to catch fish", "Sexually reversed plumage: females have a chestnut breast band; males only blue-gray", "Large dagger-shaped bill; prominent crest; short legs"] }
+        ]}
+      ]},
+      // Piciformes
+      { name: "Piciformes", rank: "order", common: "woodpeckers", children: [
+        { name: "Picidae", rank: "family", common: "woodpeckers", children: [
+          { name: "Dryocopus pileatus", common: "Pileated Woodpecker", rank: "species",
+            adaptations: ["Very long tongue with backward-pointing spines for extracting insects from wood", "Chisel-shaped bill; stiff rectrices used as a trunk prop; large rectangular cavities provide habitat for many other species"] },
+          { name: "Colaptes auratus", common: "Northern Flicker", rank: "species",
+            adaptations: ["Often forages on the ground for ants — unusual for a woodpecker", "Long barbed tongue for extracting ants; males in West have red mustache stripe"] },
+          { name: "Dryobates pubescens", common: "Downy Woodpecker", rank: "species",
+            adaptations: ["North America's smallest woodpecker", "Short bill relative to head (shorter than Hairy Woodpecker's); stiff tail feathers for trunk support"] },
+          { name: "Leuconotopicus villosus", common: "Hairy Woodpecker", rank: "species",
+            adaptations: ["Bill approximately equal in length to head depth — longer than Downy's", "Pacific Coast morph is much darker overall"] },
+          { name: "Sphyrapicus ruber", common: "Red-breasted Sapsucker", rank: "species",
+            adaptations: ["Drills horizontal rows of sap wells; returns repeatedly to feed on sap and attracted insects", "Bright red head and breast; large white wing stripe on folded wings"] }
+        ]}
+      ]},
+      // Passeriformes
+      { name: "Passeriformes", rank: "order", common: "perching birds, songbirds", children: [
+        { name: "Corvidae", rank: "family", common: "crows, ravens, jays", children: [
+          { name: "Corvus brachyrhynchos", common: "American Crow", rank: "species",
+            adaptations: ["Highly intelligent; uses tools and solves novel problems", "Distinctive rowing flight motion; sometimes glides", "Bristle-like feathers over nostrils (shared by Corvidae, except Pinyon Jay)"] },
+          { name: "Corvus corax", common: "Common Raven", rank: "species",
+            adaptations: ["Wedge-shaped tail in flight — distinguishes raven from crow's fan-shaped tail", "Shaggy neck feathers; heavier hooked bill than crow; complex vocalizations"] },
+          { name: "Cyanocitta stelleri", common: "Steller's Jay", rank: "species",
+            adaptations: ["Only crested jay in western North America", "Uses mud to build nest — one of only two jay species to do so (shared with Blue Jay)"] },
+          { name: "Aphelocoma californica", common: "California Scrub-jay", rank: "species",
+            adaptations: ["Over 20 distinct call types documented", "No crest; stout hooked bill; long tail; azure blue dorsally"] }
+        ]},
+        { name: "Laniidae", rank: "family", common: "shrikes", children: [
+          { name: "Lanius ludovicianus", common: "Loggerhead Shrike", rank: "species",
+            adaptations: ["Impales prey on thorns or barbed wire to cache food or hold while eating", "Tomial 'teeth' on bill edge to paralyze prey — a predatory songbird without raptor talons", "Black bandit mask; chunky body with hooked bill"] }
+        ]},
+        { name: "Paridae", rank: "family", common: "chickadees, titmice", children: [
+          { name: "Poecile atricapillus", common: "Black-capped Chickadee", rank: "species",
+            adaptations: ["Primary cavity nester; pairs excavate cavities together", "Excellent spatial memory for cached food locations (hippocampus enlarges seasonally)", "Black cap and throat contrasting white cheeks"] },
+          { name: "Poecile rufescens", common: "Chestnut-backed Chickadee", rank: "species",
+            adaptations: ["Chestnut back and sides — distinctive from Black-capped Chickadee", "Cavity nester; acrobatic forager; rarely perches still"] }
+        ]},
+        { name: "Aegithalidae", rank: "family", common: "bushtits", children: [
+          { name: "Psaltriparus minimus", common: "Bushtit", rank: "species",
+            adaptations: ["Only member of family Aegithalidae in North America", "Tiny; long tails; stubby bill; moves constantly in flocks"] }
+        ]},
+        { name: "Sittidae", rank: "family", common: "nuthatches", children: [
+          { name: "Sitta canadensis", common: "Red-breasted Nuthatch", rank: "species",
+            adaptations: ["Walks head-downward on tree trunks — unique foraging posture", "Short legs; almost no visible neck; nasal calls; rusty underparts"] }
+        ]},
+        { name: "Certhiidae", rank: "family", common: "creepers", children: [
+          { name: "Certhia americana", common: "Brown Creeper", rank: "species",
+            adaptations: ["Always starts at the base of a tree and spirals upward, then flies to the base of the next tree", "Long decurved bill for probing bark crevices; stiff spine-tipped tail as prop; cryptic bark-like coloration"] }
+        ]},
+        { name: "Regulidae", rank: "family", common: "kinglets", children: [
+          { name: "Regulus satrapa", common: "Golden-crowned Kinglet", rank: "species",
+            adaptations: ["Tiny; unable to sit still — constantly flicking wings and moving", "Vivid yellow/orange crown patch raised in display; dark legs with yellow feet"] },
+          { name: "Corthylio calendula", common: "Ruby-crowned Kinglet", rank: "species",
+            adaptations: ["Red crown usually concealed in males — flashed in display or agitation", "White eye ring; white wing bar above a black wing bar; olive-green body"] }
+        ]},
+        { name: "Turdidae", rank: "family", common: "thrushes", children: [
+          { name: "Turdus migratorius", common: "American Robin", rank: "species",
+            adaptations: ["Large-bellied thrush with rust-colored belly; males darker with yellow bill", "Flute-like song; one of the earliest spring singers"] }
+        ]},
+        { name: "Sturnidae", rank: "family", common: "starlings", children: [
+          { name: "Sturnus vulgaris", common: "European Starling", rank: "species",
+            adaptations: ["Invasive; introduced to North America and now one of the most abundant birds on the continent", "Vocal mimic — individuals recorded imitating up to 20 other species' calls", "Sharp pointed wings in flight; iridescent purple-green breeding plumage"] }
+        ]},
+        { name: "Icteridae", rank: "family", common: "blackbirds, orioles", children: [
+          { name: "Agelaius phoeniceus", common: "Red-winged Blackbird", rank: "species",
+            adaptations: ["Males display red and yellow epaulets to defend territory aggressively", "Females highly polygynous; strong sexual dimorphism (females cryptically brown)"] },
+          { name: "Euphagus cyanocephalus", common: "Brewer's Blackbird", rank: "species",
+            adaptations: ["Males have purple sheen on head grading to green iridescence on body", "Piercing yellow eye in males; medium blackbird with round head and straight bill"] },
+          { name: "Icterus bullockii", common: "Bullock's Oriole", rank: "species",
+            adaptations: ["Males bright orange and black with large white wing patch", "Sharply pointed bill; builds pendulous woven nest"] }
+        ]},
+        { name: "Passerellidae", rank: "family", common: "New World sparrows, towhees", children: [
+          { name: "Melospiza melodia", common: "Song Sparrow", rank: "species",
+            adaptations: ["Breast streaks converge to a central spot — key field mark", "Builds the same style of nest across widely different populations and climates"] },
+          { name: "Pipilo maculatus", common: "Spotted Towhee", rank: "species",
+            adaptations: ["Backwards-scratching hop to uncover food in leaf litter", "Large sparrow; males black dorsally with rufous flanks and white spots on wings and back"] },
+          { name: "Junco hyemalis", common: "Dark-eyed Junco", rank: "species",
+            adaptations: ["Prominent white outer tail feathers flash in flight", "Oregon morph has dark brown hood and buffy sides; pale conical bill"] }
+        ]},
+        { name: "Fringillidae", rank: "family", common: "finches", children: [
+          { name: "Spinus tristis", common: "American Goldfinch", rank: "species",
+            adaptations: ["Breeding males bright yellow with black forehead and wings", "Distinctive undulating 'flap-flap-glide' flight pattern shared with woodpeckers; conical bill for seed extraction"] },
+          { name: "Haemorhous mexicanus", common: "House Finch", rank: "species",
+            adaptations: ["Rosy red coloration in males varies in intensity with diet quality", "Conical seed-eating bill; notched tail; brown overall with blurry streaks in females"] }
+        ]},
+        { name: "Bombycillidae", rank: "family", common: "waxwings", children: [
+          { name: "Bombycilla cedrorum", common: "Cedar Waxwing", rank: "species",
+            adaptations: ["Waxy red tips on secondary feathers — shafts extend beyond barbs (hence 'waxwing')", "Can survive on fruit alone for months; silky plumage; not sexually dimorphic"] }
+        ]}
+      ]}
+    ]
+  }
+
+  ] // end TREE.children
 };
 
 // ─────────────────────────────────────────────
-// SECTION 2: RENDERING THE TREE
-// We walk the TREE object and build HTML list
-// elements (<li>, <ul>) that match its structure.
+// SECTION 2: STATE
 // ─────────────────────────────────────────────
 
-// buildNode takes one node from the data and returns
-// a <li> element representing it (with its children inside).
+let activeFilter = 'all';   // 'all' | 'fish' | 'birds'
+let quizMode     = 'random'; // 'random' | 'targeted'
+let targetRank   = 'order';  // 'order' | 'class' | 'family'
+let score        = { correct: 0, total: 0 };
+let currentQuestion = null;
+
+// ─────────────────────────────────────────────
+// SECTION 3: FILTER + TREE RENDERING
+// ─────────────────────────────────────────────
+
+function setFilter(f) {
+  activeFilter = f;
+  ['all','fish','birds'].forEach(id =>
+    document.getElementById('filter-' + id).classList.toggle('active', id === f)
+  );
+  renderTree();
+  // Reset quiz when filter changes
+  score = { correct: 0, total: 0 };
+  if (document.getElementById('quiz-view').classList.contains('visible')) {
+    renderQuestion();
+  }
+}
+
+// Walk the tree and return a flat list of { species, path } pairs.
+// flatMap is like map, but flattens one level — perfect for tree recursion.
+function flattenSpecies(node, path = []) {
+  const current = [...path, node];
+  if (!node.children || node.children.length === 0) {
+    return node.ghost ? [] : [{ species: node, path: current }];
+  }
+  return node.children.flatMap(child => flattenSpecies(child, current));
+}
+
+// Returns species filtered by the active group.
+// A species belongs to 'fish' or 'birds' if any ancestor node has that group.
+function getFilteredSpecies() {
+  return flattenSpecies(TREE).filter(({ path }) => {
+    if (activeFilter === 'all') return true;
+    return path.some(n => n.group === activeFilter);
+  });
+}
+
+function renderTree() {
+  const root = document.getElementById('tree-root');
+  root.innerHTML = '';
+  for (const child of TREE.children) {
+    if (activeFilter === 'all' || child.group === activeFilter) {
+      root.appendChild(buildNode(child, [TREE]));
+    }
+  }
+}
+
+// buildNode takes one node and returns a <li> element representing it.
 function buildNode(node, ancestors) {
   const li = document.createElement('li');
   li.className = 'tree-node';
 
   const isLeaf = !node.children || node.children.length === 0;
-  const path = [...ancestors, node];  // track ancestors for the detail panel
+  const path = [...ancestors, node];
 
-  // The clickable row
   const row = document.createElement('div');
   row.className = 'node-row';
 
-  // Toggle icon (▶ / ▼ for expandable, • for leaves)
   const icon = document.createElement('span');
   icon.className = 'toggle-icon';
   icon.textContent = isLeaf ? '•' : '▶';
   row.appendChild(icon);
 
-  // Name
   const nameEl = document.createElement('span');
   nameEl.className = 'node-name' + (node.ghost ? ' ghost' : '');
   nameEl.textContent = node.name;
   row.appendChild(nameEl);
 
-  // Common name (if present)
   if (node.common) {
     const commonEl = document.createElement('span');
     commonEl.className = 'node-common';
@@ -676,7 +917,6 @@ function buildNode(node, ancestors) {
     row.appendChild(commonEl);
   }
 
-  // Rank badge (right-aligned)
   if (node.rank !== 'root') {
     const badge = document.createElement('span');
     badge.className = 'rank-badge';
@@ -686,7 +926,6 @@ function buildNode(node, ancestors) {
 
   li.appendChild(row);
 
-  // Build children recursively
   if (!isLeaf) {
     const ul = document.createElement('ul');
     for (const child of node.children) {
@@ -694,16 +933,13 @@ function buildNode(node, ancestors) {
     }
     li.appendChild(ul);
 
-    // Click on an internal node: toggle open/closed
     row.addEventListener('click', () => {
       li.classList.toggle('open');
       icon.textContent = li.classList.contains('open') ? '▼' : '▶';
     });
   } else {
-    // Click on a species: show detail panel
     row.addEventListener('click', () => {
       showDetail(path);
-      // highlight selected
       document.querySelectorAll('.node-row.selected')
         .forEach(el => el.classList.remove('selected'));
       row.classList.add('selected');
@@ -714,9 +950,7 @@ function buildNode(node, ancestors) {
 }
 
 // ─────────────────────────────────────────────
-// SECTION 3: THE DETAIL PANEL
-// When a species is clicked, we show the full
-// taxonomy breadcrumb on the right.
+// SECTION 4: DETAIL PANEL
 // ─────────────────────────────────────────────
 
 function showDetail(path) {
@@ -741,10 +975,8 @@ function showDetail(path) {
     nameEl.className = 'bc-name';
     nameEl.textContent = node.name;
     row.appendChild(nameEl);
-
     bc.appendChild(row);
 
-    // Common name on its own line under the species
     if (node.common && node.rank === 'species') {
       const commonRow = document.createElement('div');
       commonRow.className = 'bc-row';
@@ -758,32 +990,37 @@ function showDetail(path) {
   }
 
   panel.appendChild(bc);
-}
 
-// ─────────────────────────────────────────────
-// SECTION 4: QUIZ MODE
-// ─────────────────────────────────────────────
+  // Show adaptations if the species has them
+  const species = path[path.length - 1];
+  if (species.adaptations && species.adaptations.length > 0) {
+    const section = document.createElement('div');
+    section.className = 'adaptations';
 
-// flattenSpecies walks the entire tree and returns a flat array.
-// Each entry is { species: node, path: [root…species] }.
-// flatMap is like map, but if the callback returns an array,
-// it flattens one level — perfect for recursive tree walks.
-function flattenSpecies(node, path = []) {
-  const current = [...path, node];
-  if (!node.children || node.children.length === 0) {
-    return node.ghost ? [] : [{ species: node, path: current }];
+    const title = document.createElement('div');
+    title.className = 'adapt-title';
+    title.textContent = 'Notable adaptations';
+    section.appendChild(title);
+
+    for (const adapt of species.adaptations) {
+      const item = document.createElement('div');
+      item.className = 'adapt-item';
+      item.textContent = adapt;
+      section.appendChild(item);
+    }
+    panel.appendChild(section);
   }
-  return node.children.flatMap(child => flattenSpecies(child, current));
 }
 
-const ALL_SPECIES = flattenSpecies(TREE);
+// ─────────────────────────────────────────────
+// SECTION 5: QUIZ
+// ─────────────────────────────────────────────
 
-// allOfRank collects every unique node name at a given rank across all species.
-// Set is like Python's set — it automatically ignores duplicates.
-function allOfRank(rank) {
+// Collect all unique values at a given rank from a pool of species.
+function valuesAtRank(pool, rank) {
   const seen = new Set();
   const results = [];
-  for (const { path } of ALL_SPECIES) {
+  for (const { path } of pool) {
     for (const node of path) {
       if (node.rank === rank && !seen.has(node.name)) {
         seen.add(node.name);
@@ -794,50 +1031,78 @@ function allOfRank(rank) {
   return results;
 }
 
-// generateQuestion picks a random species and a random rank to ask about.
-// Math.random() gives a decimal between 0 and 1.
-// Math.floor() rounds down to an integer — together they pick a random index.
-function generateQuestion() {
-  const { species, path } = ALL_SPECIES[Math.floor(Math.random() * ALL_SPECIES.length)];
+function generateQuestion(attempt = 0) {
+  if (attempt > 30) return null; // give up if pool is too thin
 
-  // Only ask about ranks that actually exist in this species' path
-  const askable = ['class', 'subclass', 'order', 'family']
-    .filter(r => path.some(n => n.rank === r));
-  const rank = askable[Math.floor(Math.random() * askable.length)];
+  const pool = getFilteredSpecies();
+  if (pool.length === 0) return null;
 
-  const correct = path.find(n => n.rank === rank).name;
+  let species, path, rank, correct;
 
-  // Wrong answers: all other values of this rank, shuffled, take 3
-  // .filter() returns a new array keeping only items where the callback is true
-  // .sort(() => Math.random() - 0.5) is a simple shuffle trick
-  const wrongs = allOfRank(rank)
+  if (quizMode === 'targeted') {
+    // Only include species that have the target rank in their path
+    const eligible = pool.filter(({ path }) => path.some(n => n.rank === targetRank));
+    if (eligible.length === 0) return generateQuestion(attempt + 1);
+
+    const pick = eligible[Math.floor(Math.random() * eligible.length)];
+    species = pick.species;
+    path    = pick.path;
+    rank    = targetRank;
+    correct = path.find(n => n.rank === rank).name;
+  } else {
+    // Random mode: pick a random species, then a random rank from its path
+    const pick = pool[Math.floor(Math.random() * pool.length)];
+    species = pick.species;
+    path    = pick.path;
+
+    const askable = ['class', 'subclass', 'order', 'family']
+      .filter(r => path.some(n => n.rank === r));
+    if (askable.length === 0) return generateQuestion(attempt + 1);
+
+    rank    = askable[Math.floor(Math.random() * askable.length)];
+    correct = path.find(n => n.rank === rank).name;
+  }
+
+  const allAtRank = valuesAtRank(pool, rank);
+  const wrongs = allAtRank
     .filter(n => n !== correct)
     .sort(() => Math.random() - 0.5)
     .slice(0, 3);
 
+  if (wrongs.length === 0) return generateQuestion(attempt + 1);
+
   const options = [correct, ...wrongs].sort(() => Math.random() - 0.5);
-
-  return { species, rank, correct, options };
+  return { species, rank, correct, options, path };
 }
-
-// Quiz state
-let score = { correct: 0, total: 0 };
-let currentQuestion = null;
 
 function renderQuestion() {
   currentQuestion = generateQuestion();
-  const { species, rank, options } = currentQuestion;
+  if (!currentQuestion) {
+    document.getElementById('q-species').textContent  = 'Not enough data for this filter/mode combination.';
+    document.getElementById('q-secondary').textContent = '';
+    document.getElementById('q-question').textContent  = '';
+    document.getElementById('q-options').innerHTML     = '';
+    return;
+  }
 
-  document.getElementById('q-species').textContent = species.name;
-  document.getElementById('q-common').textContent  = species.common || '';
-  document.getElementById('q-question').textContent = `What is the ${rank}?`;
-  document.getElementById('q-feedback').textContent = '';
-  document.getElementById('q-next').style.display   = 'none';
-  document.getElementById('q-score').textContent    =
+  const { species, rank, options, path } = currentQuestion;
+
+  // For birds, show common name big and scientific name small (italic).
+  // For fish, show scientific name big and common name small.
+  const isBird = path.some(n => n.group === 'birds');
+  const primaryText   = isBird ? (species.common || species.name) : species.name;
+  const secondaryText = isBird ? species.name : (species.common || '');
+
+  document.getElementById('q-species').textContent   = primaryText;
+  document.getElementById('q-secondary').textContent = secondaryText;
+  document.getElementById('q-question').textContent  = `What is the ${rank}?`;
+  document.getElementById('q-feedback').textContent  = '';
+  document.getElementById('q-next').style.display    = 'none';
+  document.getElementById('q-score').textContent     =
     score.total > 0 ? `${score.correct} / ${score.total} correct` : '';
 
   const optionsEl = document.getElementById('q-options');
-  optionsEl.innerHTML = '';  // clear old buttons
+  optionsEl.innerHTML = '';
 
   for (const opt of options) {
     const btn = document.createElement('button');
@@ -852,7 +1117,6 @@ function handleAnswer(chosen) {
   const { correct } = currentQuestion;
   score.total++;
 
-  // Disable all buttons
   document.querySelectorAll('.quiz-option').forEach(btn => {
     btn.disabled = true;
     if (btn.textContent === correct) btn.classList.add('correct');
@@ -863,34 +1127,43 @@ function handleAnswer(chosen) {
     score.correct++;
     document.getElementById('q-feedback').textContent = 'Correct!';
   } else {
-    document.getElementById('q-feedback').textContent = `Not quite — the ${currentQuestion.rank} is ${correct}.`;
+    document.getElementById('q-feedback').textContent =
+      `Not quite — the ${currentQuestion.rank} is ${correct}.`;
   }
 
   document.getElementById('q-next').style.display = 'inline-block';
   document.getElementById('q-score').textContent  = `${score.correct} / ${score.total} correct`;
 }
 
-function nextQuestion() {
+function nextQuestion() { renderQuestion(); }
+
+function setQuizMode(mode) {
+  quizMode = mode;
+  document.getElementById('qm-random').classList.toggle('active',   mode === 'random');
+  document.getElementById('qm-targeted').classList.toggle('active', mode === 'targeted');
+  document.getElementById('rank-select').classList.toggle('visible', mode === 'targeted');
+  score = { correct: 0, total: 0 };
   renderQuestion();
 }
 
-// Mode switching
+function setTargetRank(rank) {
+  targetRank = rank;
+  score = { correct: 0, total: 0 };
+  renderQuestion();
+}
+
+// ─────────────────────────────────────────────
+// SECTION 6: MODE SWITCHING + BOOT
+// ─────────────────────────────────────────────
+
 function setMode(mode) {
   const isBrowse = mode === 'browse';
-  document.getElementById('browse-view').style.display = isBrowse ? 'flex'  : 'none';
+  document.getElementById('browse-view').style.display = isBrowse ? 'flex' : 'none';
   document.getElementById('quiz-view').classList.toggle('visible', !isBrowse);
   document.getElementById('btn-browse').classList.toggle('active',  isBrowse);
   document.getElementById('btn-quiz').classList.toggle('active',   !isBrowse);
   if (!isBrowse && score.total === 0) renderQuestion();
 }
 
-// ─────────────────────────────────────────────
-// BOOT: render the tree into the page
-// ─────────────────────────────────────────────
-
-const root = document.getElementById('tree-root');
-// Render the top-level children of the root node
-for (const child of TREE.children) {
-  root.appendChild(buildNode(child, [TREE]));
-}
+renderTree();
 </script>
