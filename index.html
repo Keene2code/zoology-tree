@@ -1,3 +1,8 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vertebrate Zoology</title>
 
 <style>
@@ -357,6 +362,8 @@
 </style>
 
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap">
+</head>
+<body>
 
 <h1>Vertebrate Zoology — Study Tree</h1>
 <p class="subtitle">Click any node to expand · Select a species for taxonomy + adaptations</p>
@@ -365,7 +372,8 @@
   <span class="bar-label">Group:</span>
   <button class="filter-btn active" id="filter-all"   onclick="setFilter('all')">All</button>
   <button class="filter-btn"        id="filter-fish"  onclick="setFilter('fish')">Fish</button>
-  <button class="filter-btn"        id="filter-birds" onclick="setFilter('birds')">Birds</button>
+  <button class="filter-btn"        id="filter-birds"    onclick="setFilter('birds')">Birds</button>
+  <button class="filter-btn"        id="filter-mammals" onclick="setFilter('mammals')">Mammals</button>
 </div>
 
 <div class="mode-bar">
@@ -830,6 +838,179 @@ const TREE = {
     ]
   }
 
+  ,
+
+  // ── MAMMALS ──────────────────────────────
+  {
+    name: "Mammalia", rank: "class", common: "mammals", group: "mammals",
+    children: [
+
+      { name: "Didelphimorphia", rank: "order", common: "opossums", children: [
+        { name: "Didelphidae", rank: "family", children: [
+          { name: "Didelphis virginianus", common: "Virginia Opossum", rank: "species",
+            adaptations: ["Only marsupial in North America", "I 5/4 C 1/1 P 3/3 M 4/4 = 50 teeth — highest tooth count of any North American mammal", "Semi-arboreal omnivore; long snout, narrow braincase, prominent sagittal crest"] }
+        ]}
+      ]},
+
+      { name: "Eulipotyphla", rank: "order", common: "shrews, moles", children: [
+        { name: "Soricidae", rank: "family", common: "true shrews", children: [
+          { name: "Sorex bendirii", common: "Pacific Water Shrew", rank: "species",
+            adaptations: ["Largest Sorex in North America; semi-aquatic", "Pointed teeth and flexible snout for invertebrate prey", "Robust cylindrical skull with fused sutures; small eyes; long narrow tail"] },
+          { name: "Sorex palustris", common: "American Water Shrew", rank: "species",
+            adaptations: ["Fringed hind feet and stiff hairs trap air for brief surface-walking on water", "Pointed teeth and flexible snout; small eyes, slender feet", "Robust cylindrical skull with fused sutures"] }
+        ]},
+        { name: "Talpidae", rank: "family", common: "true moles", children: [
+          { name: "Scapanus townsendii", common: "Townsend's Mole", rank: "species",
+            adaptations: ["Largest mole in North America; highly fossorial", "Forelimbs rotated outward with powerful claws for digging", "Cylindrical body, hairless tubular snout; small eyes, no external ears"] }
+        ]}
+      ]},
+
+      { name: "Chiroptera", rank: "order", common: "bats", children: [
+        { name: "Vespertilionidae", rank: "family", common: "vesper bats", children: [
+          { name: "Lasiurus cinerius", common: "Hoary Bat", rank: "species",
+            adaptations: ["Largest bat in Oregon; frosted/hoary fur distinctive", "Migratory solitary tree-roosting bat", "Echolocation via vocally emitted pulses; simple nose (no extra appendages)"] },
+          { name: "Lasiurus frantzii", common: "Western Red Bat", rank: "species",
+            adaptations: ["Sexually dimorphic: brick-red males, chestnut females", "Roosts in tree foliage, camouflaged as a dead leaf", "Migratory; echolocation via vocally emitted pulses"] },
+          { name: "Myotis lucifugus", common: "Little Brown Myotis", rank: "species",
+            adaptations: ["One of the most common bats in North America; colonial roosting", "High-frequency echolocation (40–80 kHz) for insect detection; simple nose", "Highly vulnerable to white-nose syndrome"] },
+          { name: "Myotis yumanensis", common: "Yuma Myotis", rank: "species",
+            adaptations: ["Forages low over water, scooping insects from the surface", "Echolocation via vocally emitted pulses; large ears; simple nose", "Brown above with pale underparts; smaller than Little Brown Myotis"] }
+        ]}
+      ]},
+
+      { name: "Carnivora", rank: "order", common: "carnivores", children: [
+        { name: "Canidae", rank: "family", common: "dogs, wolves, foxes", children: [
+          { name: "Canis latrans", common: "Coyote", rank: "species",
+            adaptations: ["Highly adaptable generalist; 42 teeth with large carnassials (P4/M1)", "Elongated rostrum much longer than Felidae", "V-shaped temporal lines on skull (vs. U-shaped in Gray Fox)"] },
+          { name: "Canis lupus", common: "Gray Wolf", rank: "species",
+            adaptations: ["Largest wild canid; pack hunter with complex social structure", "42 teeth; broad chest and larger skull than coyote", "Carnassial pair: 4th upper premolar + 1st lower molar"] },
+          { name: "Urocyon cinereoargenteus", common: "Gray Fox", rank: "species",
+            adaptations: ["Only canid that routinely climbs trees", "U-shaped temporal lines on skull (key ID vs. Red Fox's V-shape)", "Grizzled gray dorsum with rust-colored sides and white chin"] },
+          { name: "Vulpes vulpes", common: "Red Fox", rank: "species",
+            adaptations: ["V-shaped temporal lines on skull (key ID vs. Gray Fox's U-shape)", "White-tipped tail; highly adaptable urban and rural predator", "42 teeth; bushy tail nearly half its body length"] }
+        ]},
+        { name: "Felidae", rank: "family", common: "cats", children: [
+          { name: "Lynx rufus", common: "Bobcat", rank: "species",
+            adaptations: ["Protractile claws: actively protract, passively retract", "Short skull with shortened snout, rounded profile, large orbits", "30 teeth (3/3 1/1 3/2 1/1); tufted ears; spotted coat"] },
+          { name: "Puma concolor", common: "Mountain Lion", rank: "species",
+            adaptations: ["Largest felid in North America; obligate carnivore", "Protractile claws; slender muscled body; flexible forelimbs", "Tongue covered in hook-like papillae for scraping meat; short snout"] }
+        ]},
+        { name: "Mephitidae", rank: "family", common: "skunks", children: [
+          { name: "Mephitis mephitis", common: "Striped Skunk", rank: "species",
+            adaptations: ["Highly developed anal scent glands that spray thiol compounds up to 3 m", "Aposematic black-and-white coloration as warning signal", "Short limbs adapted for digging; broad squat body; nocturnal omnivore"] }
+        ]},
+        { name: "Mustelidae", rank: "family", common: "weasels, otters, badgers", children: [
+          { name: "Lontra canadensis", common: "River Otter", rank: "species",
+            adaptations: ["Semi-aquatic; streamlined body, webbed feet, dense waterproof fur", "Short skull with dumbbell-shaped upper molar (key Mustelidae ID)", "Anal scent glands for territory marking"] },
+          { name: "Martes pennanti", common: "Fisher", rank: "species",
+            adaptations: ["One of very few predators that regularly preys on porcupines", "Dense dark fur; elongated body; short legs; round ears", "Anal scent glands; short skull characteristic of Mustelidae"] },
+          { name: "Mustela frenata", common: "Long-tailed Weasel", rank: "species",
+            adaptations: ["Skull 40–58 mm long; dumbbell-shaped upper molar (key ID vs. Mink)", "Elongated body for pursuing prey into burrows; black-tipped tail", "4 upper cheek teeth; prominent auditory bulla"] },
+          { name: "Neovison vison", common: "Mink", rank: "species",
+            adaptations: ["Skull over 58 mm long; dumbbell-shaped upper molar (key ID vs. Weasel)", "Semi-aquatic; dense waterproof underfur; 4 upper cheek teeth", "Prominent elongated auditory bulla"] },
+          { name: "Taxidea taxus", common: "American Badger", rank: "species",
+            adaptations: ["Powerful fossorial forelimbs with heavy claws for digging out prey", "Low flat profile; short wide skull with sagittal crest", "Anal scent glands; loose skin helps resist bites; Mustelidae"] }
+        ]},
+        { name: "Procyonidae", rank: "family", common: "raccoons, ringtails", children: [
+          { name: "Bassariscus astutus", common: "Ringtail", rank: "species",
+            adaptations: ["Omnivore; Procyonidae carnassials poorly developed", "Dental formula 3/3 1/1 4/4 2/2; shortened rostrum; flat mandibular fossa", "Large eyes for nocturnal vision; long banded tail for balance"] },
+          { name: "Procyon lotor", common: "Raccoon", rank: "species",
+            adaptations: ["Procyonidae omnivore — carnassials especially poorly developed", "Highly dexterous forepaws with tactile sensitivity", "Shortened rostrum; relatively flat mandibular fossa; 40 teeth"] }
+        ]},
+        { name: "Ursidae", rank: "family", common: "bears", children: [
+          { name: "Ursus americanus", common: "American Black Bear", rank: "species",
+            adaptations: ["Plantigrade feet — weight on hind foot, not digitigrade like most carnivorans", "Undeveloped carnassials; molars do most chewing (omnivore)", "Only carnivoran with color vision; no sensitive muzzle whiskers"] }
+        ]}
+      ]},
+
+      { name: "Artiodactyla", rank: "order", common: "even-toed ungulates", children: [
+        { name: "Cervidae", rank: "family", common: "deer", children: [
+          { name: "Cervus canadensis", common: "Elk", rank: "species",
+            adaptations: ["Antlers: bone shed annually, initially covered in vascularized velvet", "No upper incisors — hard palate instead; selenodont cheek teeth for browsing", "Post-orbital bar completes lateral margin of orbit; no sagittal crest"] },
+          { name: "Odocoileus hemionus columbianus", common: "Black-tailed Deer", rank: "species",
+            adaptations: ["Black dorsal tail surface (field mark vs. White-tailed Deer)", "Antlers typically branch twice; metatarsal gland ~3 inches on lower leg", "No upper incisors; post-orbital bar; selenodont cheek teeth"] }
+        ]},
+        { name: "Antilocapridae", rank: "family", common: "pronghorn", children: [
+          { name: "Antilocapra americana", common: "Pronghorn", rank: "species",
+            adaptations: ["Unique horn type: keratinous sheath over bony core — sheath shed annually (neither true antler nor true horn)", "Horns with two branches; large orbits placed far back on skull", "Fastest land mammal in Western Hemisphere; preorbital vacuity on rostrum"] }
+        ]}
+      ]},
+
+      { name: "Rodentia", rank: "order", common: "rodents", children: [
+        { name: "Aplodontiidae", rank: "family", common: "mountain beaver", children: [
+          { name: "Aplodontia rufa", common: "Mountain Beaver", rank: "species",
+            adaptations: ["Most primitive living rodent; endemic to Pacific Northwest", "Zygomatic plate narrow and horizontal; zygomatic arches flare widely", "Fossorial; skull flat in side view, widened posteriorly in dorsal view"] }
+        ]},
+        { name: "Castoridae", rank: "family", common: "beavers", children: [
+          { name: "Castor canadensis", common: "Beaver", rank: "species",
+            adaptations: ["Largest rodent in North America; ecological engineer — dams and lodges", "Semiaquatic; broad dorsally-flattened paddle tail; webbed hind feet; black whiskers", "Strong flat skull; long bony tube surrounding external auditory meatus; 4 cheekteeth"] }
+        ]},
+        { name: "Sciuridae", rank: "family", common: "squirrels, marmots, chipmunks", children: [
+          { name: "Marmota flaviventris", common: "Yellow-bellied Marmot", rank: "species",
+            adaptations: ["Largest ground squirrel in the region; hibernates up to 8 months", "Sciuridae skull: postorbital process present; short rostrum, arched profile", "Rufous belly; social; sentinel behavior"] },
+          { name: "Sciurus griseus", common: "Western Gray Squirrel", rank: "species",
+            adaptations: ["Largest tree squirrel in Oregon; all-gray with white underparts", "Sciuridae: jugal contacts frontal; short rostrum, arched profile; 4–5 cheekteeth", "Caches acorns and seeds; relies on spatial memory for recovery"] },
+          { name: "Sciurus carolinensis", common: "Eastern Gray Squirrel", rank: "species",
+            adaptations: ["Introduced; 22 teeth (I 1/1 C 0/0 P 2/1 M 3/3)", "Grizzled gray with possible cinnamon tones; melanism common in north", "Outcompetes Western Gray Squirrel in urban areas"] },
+          { name: "Sciurus niger vulpinus", common: "Fox Squirrel", rank: "species",
+            adaptations: ["Largest tree squirrel in North America; rusty/orange belly (key ID)", "Introduced from eastern NA; larger and more robust than gray squirrels", "Sciuridae skull pattern; bushy tail; variable dorsal coloration"] },
+          { name: "Urocitellus beldingi", common: "Belding's Ground Squirrel", rank: "species",
+            adaptations: ["Ground squirrel; short rostrum and convex dorsal skull profile", "Hypsodont molars with continuous metaloph on 4th premolar", "Alarm calls warn colony; stands upright for predator surveillance"] },
+          { name: "Neotamias minimus", common: "Least Chipmunk", rank: "species",
+            adaptations: ["Smallest chipmunk; 3 dark and 2 light dorsal stripes plus facial stripes", "Bushy tail; orangish-brown dorsum; grayish-white underparts", "Stores food in cheek pouches; Sciuridae postorbital process present"] },
+          { name: "Tamiasciurus douglasii", common: "Douglas Squirrel", rank: "species",
+            adaptations: ["Conifer specialist; caches pine cones in middens", "Orange-to-dark chest and belly distinctive (key ID vs. other squirrels in region)", "Aggressive territorial calls; distinct summer vs. winter pelage"] },
+          { name: "Glaucomys oregonensis", common: "Humboldt's Flying Squirrel", rank: "species",
+            adaptations: ["Glides via patagium (skin membrane) stretched between fore- and hind limbs", "Nocturnal; large eyes for low-light vision", "Both sexes fluoresce pink under UV light (biofluorescence) — unique among Oregon squirrels"] }
+        ]},
+        { name: "Geomyidae", rank: "family", common: "pocket gophers", children: [
+          { name: "Thomomys bulbivorus", common: "Camas Pocket Gopher", rank: "species",
+            adaptations: ["Fossorial; fur-lined cheek pouches extend from mouth into shoulders", "Massive angular skull; well-developed temporal ridges; massive incisors", "Infraorbital foramen small, sunk in pit on side of rostrum"] }
+        ]},
+        { name: "Heteromyidae", rank: "family", common: "kangaroo rats", children: [
+          { name: "Dipodomys ordii", common: "Ord's Kangaroo Rat", rank: "species",
+            adaptations: ["Bipedal jumping: long powerful hind limbs, short forelimbs, partly fused neck vertebrae", "Skull with enormously enlarged auditory bullae", "Long tufted tail for balance; 4 cheekteeth with distinctive occlusal pattern"] }
+        ]},
+        { name: "Cricetidae", rank: "family", common: "New World rats, mice, voles", children: [
+          { name: "Ondatra zibethicus", common: "Muskrat", rank: "species",
+            adaptations: ["Semiaquatic; laterally-flattened (side-to-side) hairless tail — key ID vs. beaver's flat paddle tail", "Black whiskers; dense underfur; hind feet partially webbed", "Herbivore; builds lodges of aquatic vegetation in wetlands"] },
+          { name: "Arborimus longicaudus", common: "Red Tree Vole", rank: "species",
+            adaptations: ["Arboreal vole; lives almost entirely in Douglas-fir canopy", "Removes resin ducts before eating Douglas-fir needles", "Bright reddish-orange dorsum; long tail relative to body"] },
+          { name: "Myodes californicus", common: "Western Red-backed Vole", rank: "species",
+            adaptations: ["Chestnut-red dorsal stripe contrasting with gray sides", "Forest floor specialist in coniferous forests", "Larger body and longer tail than most microtine voles in the region"] },
+          { name: "Microtus townsendii", common: "Townsend's Vole", rank: "species",
+            adaptations: ["Largest vole in Oregon; dark brown overall", "Short rounded ears; stocky microtine body; laterally-flattened tail", "Generalist herbivore in moist grasslands and wetland edges"] },
+          { name: "Peromyscus maniculatus", common: "Deer Mouse", rank: "species",
+            adaptations: ["I 1/1 C 0/0 P 0/0 M 3/3 = 16 teeth; bicolored tail", "Bicolored pelage: brown above, white below with sharp boundary", "Hantavirus (Sin Nombre) reservoir in Pacific Northwest"] }
+        ]},
+        { name: "Erethizontidae", rank: "family", common: "New World porcupines", children: [
+          { name: "Erethizon dorsatum", common: "North American Porcupine", rank: "species",
+            adaptations: ["30,000+ modified hollow barbed quills release on contact with predators", "Quills are modified hairs — cannot throw them, but detach easily on touch", "Herbivore; gnaws bark and conifer needles; second-largest rodent in North America"] }
+        ]},
+        { name: "Echimyidae", rank: "family", common: "spiny rats", children: [
+          { name: "Myocastor coypus", common: "Nutria", rank: "species",
+            adaptations: ["Invasive from South America; ~1/3 size of beaver, >5× size of muskrat", "White muzzle and white whiskers (key ID vs. beaver and muskrat, which have black whiskers)", "Jugal does not contact lacrimal; round hairless tail; semi-aquatic"] }
+        ]}
+      ]},
+
+      { name: "Lagomorpha", rank: "order", common: "rabbits, hares, pikas", children: [
+        { name: "Leporidae", rank: "family", common: "rabbits and hares", children: [
+          { name: "Lepus californicus", common: "Black-tailed Jackrabbit", rank: "species",
+            adaptations: ["Hare — precocial young born fully furred with open eyes", "Enormous black-tipped ears for thermoregulation via radiant cooling", "Very long hind limbs for high-speed escape; black tail dorsum"] },
+          { name: "Sylvilagus nuttallii", common: "Mountain Cottontail", rank: "species",
+            adaptations: ["True rabbit — altricial young born blind and hairless in a lined nest", "Short ears compared to jackrabbits; cottony white tail", "Hindlimb-powered zigzag escape; crepuscular; sagebrush and shrubland habitat"] },
+          { name: "Sylvilagus bachmani", common: "Brush Rabbit", rank: "species",
+            adaptations: ["Smallest cottontail in Oregon; dark brown with relatively small ears", "Stays extremely close to dense brush cover; rarely ventures to open ground", "Altricial young; cottony tail; hindlimb-propelled escape run"] }
+        ]},
+        { name: "Ochotonidae", rank: "family", common: "pikas", children: [
+          { name: "Ochotona princeps", common: "American Pika", rank: "species",
+            adaptations: ["Does not hibernate — stores 'haypiles' of dried vegetation for winter", "Sensitive to heat; restricted to high-elevation talus; indicator species for climate change", "Small rounded ears, no visible tail; loud calls defend food cache territory"] }
+        ]}
+      ]}
+
+    ]
+  }
+
   ] // end TREE.children
 };
 
@@ -837,7 +1018,7 @@ const TREE = {
 // SECTION 2: STATE
 // ─────────────────────────────────────────────
 
-let activeFilter = 'all';   // 'all' | 'fish' | 'birds'
+let activeFilter = 'all';   // 'all' | 'fish' | 'birds' | 'mammals'
 let quizMode     = 'random'; // 'random' | 'targeted'
 let targetRank   = 'order';  // 'order' | 'class' | 'family'
 let score        = { correct: 0, total: 0 };
@@ -849,7 +1030,7 @@ let currentQuestion = null;
 
 function setFilter(f) {
   activeFilter = f;
-  ['all','fish','birds'].forEach(id =>
+  ['all','fish','birds','mammals'].forEach(id =>
     document.getElementById('filter-' + id).classList.toggle('active', id === f)
   );
   renderTree();
@@ -1167,3 +1348,5 @@ function setMode(mode) {
 
 renderTree();
 </script>
+</body>
+</html>
