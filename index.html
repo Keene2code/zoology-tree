@@ -238,6 +238,13 @@
     left: 2px;
   }
 
+  /* ── name meanings ── */
+  .bc-gloss { color: var(--fg-muted); font-size: 0.76rem; }
+  .name-word { font-size: 0.86rem; margin-top: 8px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+  .nw-word { font-style: italic; font-weight: 600; }
+  .nw-unsure { font-size: 0.68rem; border: 1px solid var(--rank-col); color: var(--rank-col); border-radius: 3px; padding: 0 4px; }
+  .name-roots { font-size: 0.78rem; color: var(--fg-muted); line-height: 1.4; margin-top: 2px; }
+
   /* ── quiz panel ── */
   .quiz-panel { display: none; max-width: 560px; }
   .quiz-panel.visible { display: block; }
@@ -366,12 +373,14 @@
 <body>
 
 <h1>Vertebrate Zoology — Study Tree</h1>
-<p class="subtitle">Click any node to expand · Select a species for taxonomy + adaptations</p>
+<p class="subtitle">Click any node to expand · Select a species for taxonomy, name meanings + adaptations</p>
 
 <div class="filter-bar">
   <span class="bar-label">Group:</span>
   <button class="filter-btn active" id="filter-all"   onclick="setFilter('all')">All</button>
   <button class="filter-btn"        id="filter-fish"  onclick="setFilter('fish')">Fish</button>
+  <button class="filter-btn"        id="filter-amphibians" onclick="setFilter('amphibians')">Amphibians</button>
+  <button class="filter-btn"        id="filter-reptiles" onclick="setFilter('reptiles')">Reptiles</button>
   <button class="filter-btn"        id="filter-birds"    onclick="setFilter('birds')">Birds</button>
   <button class="filter-btn"        id="filter-mammals" onclick="setFilter('mammals')">Mammals</button>
 </div>
@@ -420,9 +429,10 @@
 // ─────────────────────────────────────────────
 // SECTION 1: DATA
 // Each node: name, rank, common (optional),
-// group ("fish"|"birds" on top-level nodes only),
+// group ("fish"|"amphibians"|"reptiles"|"birds"|"mammals" on top-level nodes only),
 // adaptations (array, on species only),
-// ghost: true for clades with no specimens.
+// ghost: true for clades with no specimens,
+// note (optional): a line from the course list about that specimen.
 // ─────────────────────────────────────────────
 
 const TREE = {
@@ -549,6 +559,172 @@ const TREE = {
         ghost: true, note: "No museum specimens — Oregon Zoo has live specimens.", children: [] }
     ]
   },
+
+  // ── AMPHIBIANS ───────────────────────────
+  { name: "Amphibia", rank: "class", common: "amphibians", group: "amphibians", children: [
+    { name: "Gymnophiona", rank: "order", common: "caecilians", children: [
+      { name: "Siphonopidae", rank: "family", children: [
+        { name: "Siphonops annulatus", common: "Ringed Caecilian", rank: "species" }
+      ]}
+    ]},
+    { name: "Urodela", rank: "order", common: "salamanders and newts", children: [
+      { name: "Cryptobranchidae", rank: "family", children: [
+        { name: "Cryptobranchus", common: "Hellbender", rank: "species" }
+      ]},
+      { name: "Sirenidae", rank: "family", children: [
+        { name: "Siren reticulata", common: "Leopard Siren", rank: "species" }
+      ]},
+      { name: "Proteidae", rank: "family", children: [
+        { name: "Necturus", common: "Mudpuppies and Waterdogs", rank: "species" }
+      ]},
+      { name: "Dicamptodontidae", rank: "family", children: [
+        { name: "Dicamptodon copei", common: "Cope's Giant Salamander", rank: "species" },
+        { name: "Dicamptodon tenebrosus", common: "Pacific Giant Salamander", rank: "species" }
+      ]},
+      { name: "Rhyacotritonidae", rank: "family", children: [
+        { name: "Rhyacotriton cascadae", common: "Cascade Torrent Salamander", rank: "species" }
+      ]},
+      { name: "Amphiumidae", rank: "family", children: [
+        { name: "Amphiuma", common: "Amphiumas", rank: "species" }
+      ]},
+      { name: "Salamandridae", rank: "family", children: [
+        { name: "Taricha granulosa", common: "Rough-skinned Newt", rank: "species" }
+      ]},
+      { name: "Ambystomatidae", rank: "family", common: "mole salamanders", children: [
+        { name: "Ambystoma tigrinum", common: "Tiger Salamander", rank: "species" },
+        { name: "Ambystoma gracile", common: "Northwestern Salamander", rank: "species" },
+        { name: "Ambystoma macrodactylum", common: "Long-toed Salamander", rank: "species" }
+      ]},
+      { name: "Plethodontidae", rank: "family", common: "lungless salamanders", children: [
+        { name: "Aneides ferreus", common: "Clouded Salamander", rank: "species" },
+        { name: "Batrachoseps wrighti", common: "Oregon Slender Salamander", rank: "species",
+          note: "Spelled Batrachoceps on the course list; the accepted spelling is Batrachoseps." },
+        { name: "Ensatina eschscholtzii", common: "Ensatina", rank: "species" },
+        { name: "Plethodon dunni", common: "Dunn's Salamander", rank: "species" },
+        { name: "Plethodon larselli", common: "Larch Mountain Salamander", rank: "species" },
+        { name: "Plethodon vehiculum", common: "Red-backed Salamander", rank: "species" }
+      ]}
+    ]},
+    { name: "Anura", rank: "order", common: "frogs and toads", children: [
+      { name: "Ascaphidae", rank: "family", common: "tailed frogs", children: [
+        { name: "Ascaphus truei", common: "Coastal Tailed Frog", rank: "species",
+          note: "Only required to genus (Ascaphus): the two tailed frogs are reliably separated only by range and DNA." },
+        { name: "Ascaphus montanus", common: "Rocky Mountain Tailed Frog", rank: "species",
+          note: "Only required to genus (Ascaphus): the two tailed frogs are reliably separated only by range and DNA." }
+      ]},
+      { name: "Scaphiopodidae", rank: "family", common: "spadefoot toads", children: [
+        { name: "Spea intermontana", common: "Great Basin Spadefoot", rank: "species" }
+      ]},
+      { name: "Bufonidae", rank: "family", common: "toads", children: [
+        { name: "Anaxyrus boreas", common: "Western Toad", rank: "species" },
+        { name: "Anaxyrus woodhousii", common: "Woodhouse's Toad", rank: "species" }
+      ]},
+      { name: "Hylidae", rank: "family", common: "tree frogs", children: [
+        { name: "Pseudacris regilla", common: "Pacific Treefrog", rank: "species" }
+      ]},
+      { name: "Ranidae", rank: "family", common: "true frogs", children: [
+        { name: "Rana aurora", common: "Red-legged Frog", rank: "species" },
+        { name: "Rana cascadae", common: "Cascades Frog", rank: "species" },
+        { name: "Rana boylii", common: "Foothill Yellow-legged Frog", rank: "species" },
+        { name: "Lithobates catesbeianus", common: "Bullfrog", rank: "species" },
+        { name: "Lithobates clamitans", common: "Green Frog", rank: "species" },
+        { name: "Lithobates pipiens", common: "Leopard Frog", rank: "species" },
+        { name: "Rana pretiosa", common: "Oregon Spotted Frog", rank: "species",
+          note: "Only required to genus (Rana): the two spotted frogs are separated by range, slight differences and DNA." },
+        { name: "Rana luteiventris", common: "Columbia Spotted Frog", rank: "species",
+          note: "Only required to genus (Rana): the two spotted frogs are separated by range, slight differences and DNA." }
+      ]}
+    ]}
+  ]},
+
+  // ── REPTILES ─────────────────────────────
+  { name: "Reptilia", rank: "class", common: "reptiles", group: "reptiles", children: [
+    { name: "Parareptilia", rank: "subclass", children: [
+      { name: "Testudines", rank: "order", common: "turtles", children: [
+        { name: "Chelydridae", rank: "family", common: "snapping turtles", children: [
+          { name: "Chelydra serpentina", common: "Common Snapping Turtle", rank: "species" }
+        ]},
+        { name: "Emydidae", rank: "family", common: "pond, box, and water turtles", children: [
+          { name: "Chrysemys picta", common: "Western Painted Turtle", rank: "species" },
+          { name: "Trachemys scripta", common: "Red-eared Slider", rank: "species" },
+          { name: "Actinemys marmorata", common: "Western Pond Turtle", rank: "species",
+            note: "No museum specimen: identify from pictures." }
+        ]},
+        { name: "Cheloniidae", rank: "family", common: "sea turtles", children: [
+          { name: "Caretta caretta", common: "Loggerhead", rank: "species",
+            note: "No museum specimen: identify from pictures." },
+          { name: "Chelonia mydas", common: "Green Sea Turtle", rank: "species" },
+          { name: "Lepidochelys olivacea", common: "Olive Ridley Sea Turtle", rank: "species",
+            note: "No museum specimen: identify from pictures." }
+        ]},
+        { name: "Dermochelyidae", rank: "family", common: "leatherback turtles", children: [
+          { name: "Dermochelys coriacea", common: "Leatherback Sea Turtle", rank: "species",
+            note: "No museum specimen: identify from pictures." }
+        ]}
+      ]}
+    ]},
+    { name: "Eureptilia", rank: "subclass", children: [
+      { name: "Rhynchocephalia", rank: "order", common: "tuataras", children: [
+        { name: "Sphenodontidae", rank: "family", common: "tuataras", children: [
+          { name: "Sphenodon", common: "Tuatara", rank: "species" }
+        ]}
+      ]},
+      { name: "Squamata", rank: "order", common: "lizards and snakes", children: [
+        { name: "Lacertilia", rank: "suborder", common: "lizards", children: [
+          { name: "Crotaphytidae", rank: "family", common: "collared and leopard lizards", children: [
+            { name: "Crotaphytus bicinctores", common: "Mojave Black-collared Lizard", rank: "species" },
+            { name: "Gambelia wislizenii", common: "Long-nosed Leopard Lizard", rank: "species" }
+          ]},
+          { name: "Phrynosomatidae", rank: "family", children: [
+            { name: "Phrynosoma douglasii", common: "Short-horned Lizard", rank: "species" },
+            { name: "Phrynosoma platyrhinos", common: "Desert Horned Lizard", rank: "species" },
+            { name: "Sceloporus graciosus", common: "Sagebrush Lizard", rank: "species" },
+            { name: "Sceloporus occidentalis", common: "Western Fence Lizard", rank: "species" },
+            { name: "Uta stansburiana", common: "Side-blotched Lizard", rank: "species" }
+          ]},
+          { name: "Teiidae", rank: "family", common: "whiptails", children: [
+            { name: "Aspidoscelis tigris", common: "Western Whiptail", rank: "species" },
+            { name: "Aspidoscelis velox", common: "Plateau Striped Whiptail", rank: "species" }
+          ]},
+          { name: "Scincidae", rank: "family", common: "skinks", children: [
+            { name: "Plestiodon skiltonianus", common: "Western Skink", rank: "species" }
+          ]},
+          { name: "Anguidae", rank: "family", common: "alligator lizards", children: [
+            { name: "Elgaria coerulea", common: "Northern Alligator Lizard", rank: "species" },
+            { name: "Elgaria multicarinata", common: "Southern Alligator Lizard", rank: "species" }
+          ]}
+        ]},
+        { name: "Serpentes", rank: "suborder", common: "snakes", children: [
+          { name: "Boidae", rank: "family", common: "boas", children: [
+            { name: "Charina bottae", common: "Rubber Boa", rank: "species" }
+          ]},
+          { name: "Colubridae", rank: "family", common: "colubrids", children: [
+            { name: "Contia tenuis", common: "Sharptail Snake", rank: "species" },
+            { name: "Diadophis punctatus", common: "Ring-necked Snake", rank: "species" },
+            { name: "Hypsiglena torquata", common: "Night Snake", rank: "species" },
+            { name: "Lampropeltis getula", common: "Common Kingsnake", rank: "species" },
+            { name: "Lampropeltis zonata", common: "California Mountain Kingsnake", rank: "species" },
+            { name: "Coluber constrictor", common: "Racer", rank: "species" },
+            { name: "Masticophis taeniatus", common: "Striped Whipsnake", rank: "species" },
+            { name: "Pituophis catenifer", common: "Gopher Snake", rank: "species" },
+            { name: "Sonora semiannulata", common: "Western Ground Snake", rank: "species",
+              note: "No museum specimen: identify from pictures." },
+            { name: "Thamnophis elegans", common: "Western Terrestrial Garter Snake", rank: "species" },
+            { name: "Thamnophis ordinoides", common: "Northwestern Garter Snake", rank: "species" },
+            { name: "Thamnophis sirtalis", common: "Common Garter Snake", rank: "species" }
+          ]},
+          { name: "Viperidae", rank: "family", common: "vipers", children: [
+            { name: "Crotalus viridis", common: "Western Rattlesnake", rank: "species" }
+          ]}
+        ]}
+      ]},
+      { name: "Crocodylia", rank: "order", common: "crocodilians", children: [
+        { name: "Alligatoridae", rank: "family", children: [
+          { name: "Alligator mississippiensis", common: "American Alligator", rank: "species" }
+        ]}
+      ]}
+    ]}
+  ]},
 
   // ── BIRDS ────────────────────────────────
   {
@@ -1014,11 +1190,561 @@ const TREE = {
   ] // end TREE.children
 };
 
+// ── NAMES:BEGIN ──────────────────────────────
+// What each name means, word by word. Generated from the lexicon in
+// ~/Projects/what-the-names-say (run build/export-for-tree.js to refresh).
+// Each entry: gloss (a short translation), roots (the pieces, with language
+// and meaning), note (optional), unsure: true when the etymology is disputed,
+// from (for a family named after one of its genera).
+const NAMES = {
+  "aalge": {"gloss":"auk","roots":[{"form":"alka","lang":"Old Norse","meaning":"auk"}],"note":"the Danish form of the same Norse word"},
+  "acanthias": {"gloss":"the spiny one","roots":[{"form":"akantha","lang":"Greek","meaning":"thorn, spine"}],"note":"a spine in front of each dorsal fin"},
+  "Accipitridae": {"gloss":"","roots":[{"form":"accipiter","lang":"Latin","meaning":"hawk"}],"from":"Accipitriformes"},
+  "Accipitriformes": {"gloss":"hawk-shaped","roots":[{"form":"accipiter","lang":"Latin","meaning":"hawk"},{"form":"forma","lang":"Latin","meaning":"shape, form"}]},
+  "Acipenser": {"gloss":"sturgeon","roots":[{"form":"acipenser","lang":"Latin","meaning":"sturgeon"}]},
+  "Acipenseridae": {"gloss":"","roots":[{"form":"acipenser","lang":"Latin","meaning":"sturgeon"}],"from":"Acipenser"},
+  "Acipenseriformes": {"gloss":"sturgeon-shaped","roots":[{"form":"acipenser","lang":"Latin","meaning":"sturgeon"},{"form":"forma","lang":"Latin","meaning":"shape, form"}]},
+  "Actinemys": {"gloss":"ray turtle","roots":[{"form":"aktis","lang":"Greek","meaning":"ray, beam"},{"form":"emys","lang":"Greek","meaning":"freshwater turtle"}],"note":"lines radiating across each scute"},
+  "Actinopterygii": {"gloss":"ray fins","roots":[{"form":"aktis","lang":"Greek","meaning":"ray, beam"},{"form":"pteryx","lang":"Greek","meaning":"wing, fin"}]},
+  "aculeatus": {"gloss":"prickly","roots":[{"form":"aculeus","lang":"Latin","meaning":"sting, prickle"}]},
+  "acuta": {"gloss":"pointed","roots":[{"form":"acutus","lang":"Latin","meaning":"sharp, pointed"}],"note":"the pin tail"},
+  "Aechmophorus": {"gloss":"spear bearer","roots":[{"form":"aichme","lang":"Greek","meaning":"spear point"},{"form":"phoros","lang":"Greek","meaning":"bearing, carrying"}]},
+  "Aegithalidae": {"gloss":"tits, in Greek","roots":[{"form":"aigithalos","lang":"Greek","meaning":"titmouse"}]},
+  "Agelaius": {"gloss":"of the flock","roots":[{"form":"agele","lang":"Greek","meaning":"herd, flock"}]},
+  "Aix": {"gloss":"waterbird","roots":[{"form":"aix","lang":"Greek","meaning":"a diving bird in Aristotle"}]},
+  "alba": {"gloss":"white","roots":[{"form":"albus","lang":"Latin","meaning":"white"}]},
+  "albeola": {"gloss":"little white one","roots":[{"form":"albus","lang":"Latin","meaning":"white"}]},
+  "Alcedinidae": {"gloss":"kingfishers","roots":[{"form":"alcedo","lang":"Latin","meaning":"kingfisher"}]},
+  "Alcidae": {"gloss":"auks","roots":[{"form":"alka","lang":"Old Norse","meaning":"auk"}]},
+  "alcyon": {"gloss":"halcyon","roots":[{"form":"alkyon","lang":"Greek","meaning":"kingfisher; Alcyone, turned into one"}]},
+  "Alligator": {"gloss":"the lizard","roots":[{"form":"el lagarto","lang":"Spanish, from Latin","meaning":"the lizard (Latin lacerta)"}],"note":"the same word as Lacertilia, after a trip through Spanish"},
+  "Alligatoridae": {"gloss":"","roots":[{"form":"el lagarto","lang":"Spanish, from Latin","meaning":"the lizard (Latin lacerta)"}],"from":"Alligator"},
+  "Ambystoma": {"gloss":"blunt mouth","roots":[{"form":"amblys","lang":"Greek","meaning":"blunt, dull"},{"form":"stoma","lang":"Greek","meaning":"mouth"}],"note":"the usual reading; the original spelling may be a slip for Amblystoma","unsure":true},
+  "Ambystomatidae": {"gloss":"","roots":[{"form":"amblys","lang":"Greek","meaning":"blunt, dull"},{"form":"stoma","lang":"Greek","meaning":"mouth"}],"unsure":true,"from":"Ambystoma"},
+  "Ameiurus": {"gloss":"tail not shortened","roots":[{"form":"a-","lang":"Greek","meaning":"not, without"},{"form":"meion","lang":"Greek","meaning":"less, smaller"},{"form":"oura","lang":"Greek","meaning":"tail"}],"note":"the tail fin has no notch cut into it"},
+  "americana": {"gloss":"American","roots":[{"form":"America","lang":"place","meaning":""}]},
+  "americanus": {"gloss":"American","roots":[{"form":"America","lang":"place","meaning":""}]},
+  "Amia": {"gloss":"an old fish name, reassigned","roots":[{"form":"amia","lang":"Greek","meaning":"a sea fish in Aristotle, probably a bonito"}]},
+  "Amiidae": {"gloss":"","roots":[{"form":"amia","lang":"Greek","meaning":"a sea fish in Aristotle, probably a bonito"}],"from":"Amia"},
+  "Amiiformes": {"gloss":"amia-shaped","roots":[{"form":"amia","lang":"Greek","meaning":"a sea fish in Aristotle, probably a bonito"},{"form":"forma","lang":"Latin","meaning":"shape, form"}]},
+  "Amphibia": {"gloss":"living both lives","roots":[{"form":"amphi","lang":"Greek","meaning":"on both sides, of both kinds"},{"form":"bios","lang":"Greek","meaning":"life"}]},
+  "Amphiuma": {"gloss":"breathing both ways","roots":[{"form":"amphi","lang":"Greek","meaning":"on both sides, of both kinds"},{"form":"pneuma","lang":"Greek","meaning":"breath"}],"note":"an irregular coinage; the idea was an animal that breathes both air and water","unsure":true},
+  "Amphiumidae": {"gloss":"","roots":[{"form":"amphi","lang":"Greek","meaning":"on both sides, of both kinds"},{"form":"pneuma","lang":"Greek","meaning":"breath"}],"unsure":true,"from":"Amphiuma"},
+  "Anas": {"gloss":"duck","roots":[{"form":"anas","lang":"Latin","meaning":"duck"}]},
+  "Anatidae": {"gloss":"ducks","roots":[{"form":"anas","lang":"Latin","meaning":"duck"}]},
+  "Anaxyrus": {"gloss":"chief","roots":[{"form":"anax","lang":"Greek","meaning":"lord, chief"}],"note":"Tschudi never explained the name; anax is the usual guess for the first half","unsure":true},
+  "Aneides": {"gloss":"shapeless","roots":[{"form":"a-","lang":"Greek","meaning":"not, without"},{"form":"eidos","lang":"Greek","meaning":"form, shape"}]},
+  "Anguidae": {"gloss":"snake-like ones","roots":[{"form":"anguis","lang":"Latin","meaning":"snake"}]},
+  "anna": {"gloss":"Anna's","roots":[{"form":"Anna Massena","lang":"person","meaning":"Duchess of Rivoli, lady-in-waiting to Empress Eugenie"}]},
+  "annulatus": {"gloss":"ringed","roots":[{"form":"anulus","lang":"Latin","meaning":"ring"}]},
+  "Anseriformes": {"gloss":"goose-shaped","roots":[{"form":"anser","lang":"Latin","meaning":"goose"},{"form":"forma","lang":"Latin","meaning":"shape, form"}]},
+  "Antigone": {"gloss":"Antigone","roots":[{"form":"Antigone","lang":"Greek","meaning":"Antigone of Troy, turned into a stork by Hera"}],"note":"Linnaeus seems to have confused her with Gerana, who was turned into a crane"},
+  "Antilocapra": {"gloss":"antelope goat","roots":[{"form":"antholops","lang":"Late Greek","meaning":"a fabled horned beast, source of antelope"},{"form":"capra","lang":"Latin","meaning":"goat"}],"note":"it is neither"},
+  "Antilocapridae": {"gloss":"","roots":[{"form":"antholops","lang":"Late Greek","meaning":"a fabled horned beast, source of antelope"},{"form":"capra","lang":"Latin","meaning":"goat"}],"from":"Antilocapra"},
+  "Anura": {"gloss":"without a tail","roots":[{"form":"a-","lang":"Greek","meaning":"not, without"},{"form":"oura","lang":"Greek","meaning":"tail"}]},
+  "Aphelocoma": {"gloss":"smooth hair","roots":[{"form":"apheles","lang":"Greek","meaning":"smooth, plain"},{"form":"kome","lang":"Greek","meaning":"hair of the head"}],"note":"no crest"},
+  "Aplodontia": {"gloss":"simple tooth","roots":[{"form":"haploos","lang":"Greek","meaning":"simple, single"},{"form":"odous","lang":"Greek","meaning":"tooth"}]},
+  "Aplodontiidae": {"gloss":"","roots":[{"form":"haploos","lang":"Greek","meaning":"simple, single"},{"form":"odous","lang":"Greek","meaning":"tooth"}],"from":"Aplodontia"},
+  "Apodiformes": {"gloss":"footless ones","roots":[{"form":"a-","lang":"Greek","meaning":"not, without"},{"form":"pous","lang":"Greek","meaning":"foot"},{"form":"forma","lang":"Latin","meaning":"shape, form"}],"note":"tiny feet, never used for walking"},
+  "Aquila": {"gloss":"eagle","roots":[{"form":"aquila","lang":"Latin","meaning":"eagle"}]},
+  "Arborimus": {"gloss":"tree mouse","roots":[{"form":"arbor","lang":"Latin","meaning":"tree"},{"form":"mus","lang":"Latin","meaning":"mouse"}]},
+  "Ardea": {"gloss":"heron","roots":[{"form":"ardea","lang":"Latin","meaning":"heron"}]},
+  "Ardeidae": {"gloss":"","roots":[{"form":"ardea","lang":"Latin","meaning":"heron"}],"from":"Ardea"},
+  "Ardenna": {"gloss":"an old Italian seabird name","roots":[{"form":"artenna","lang":"Italian","meaning":"a seabird name Aldrovandi wrote down in 1603"}]},
+  "Artiodactyla": {"gloss":"even toes","roots":[{"form":"artios","lang":"Greek","meaning":"even, complete"},{"form":"daktylos","lang":"Greek","meaning":"finger, toe"}]},
+  "Ascaphidae": {"gloss":"","roots":[{"form":"a-","lang":"Greek","meaning":"not, without"},{"form":"skaptein","lang":"Greek","meaning":"to dig; skaphion, a spade"}],"from":"Ascaphus"},
+  "Ascaphus": {"gloss":"without a spade","roots":[{"form":"a-","lang":"Greek","meaning":"not, without"},{"form":"skaptein","lang":"Greek","meaning":"to dig; skaphion, a spade"}],"note":"as against the spadefoots; ironically this is the frog with a tail"},
+  "Aspidoscelis": {"gloss":"shield leg","roots":[{"form":"aspis","lang":"Greek","meaning":"shield"},{"form":"skelos","lang":"Greek","meaning":"leg"}]},
+  "Astur": {"gloss":"hawk","roots":[{"form":"astur","lang":"Latin","meaning":"hawk"}]},
+  "astutus": {"gloss":"cunning","roots":[{"form":"astutus","lang":"Latin","meaning":"cunning, shrewd"}]},
+  "atricapillus": {"gloss":"black-haired","roots":[{"form":"ater","lang":"Latin","meaning":"dull black"},{"form":"capillus","lang":"Latin","meaning":"hair of the head"}]},
+  "aura": {"gloss":"the Mexican name, kept","roots":[{"form":"auroua","lang":"a language of Mexico, through Hernandez","meaning":"the vulture's name in Mexico, written down in the 1500s"}],"note":"the best supported reading; others take it as Latin aura, a breeze","unsure":true},
+  "auratus": {"gloss":"gilded","roots":[{"form":"aurum","lang":"Latin","meaning":"gold"}]},
+  "auritum": {"gloss":"eared","roots":[{"form":"auris","lang":"Latin","meaning":"ear"}],"note":"the two crests"},
+  "aurora": {"gloss":"dawn","roots":[{"form":"aurora","lang":"Latin","meaning":"dawn"}],"note":"the red of the hind legs"},
+  "Aves": {"gloss":"birds","roots":[{"form":"avis","lang":"Latin","meaning":"bird"}]},
+  "bachmani": {"gloss":"Bachman's","roots":[{"form":"John Bachman","lang":"person","meaning":"Charleston pastor and naturalist, Audubon's collaborator"}]},
+  "Bassariscus": {"gloss":"little fox","roots":[{"form":"bassara","lang":"Greek","meaning":"fox"}]},
+  "Batrachoseps": {"gloss":"frog lizard","roots":[{"form":"batrachos","lang":"Greek","meaning":"frog"},{"form":"seps","lang":"Greek","meaning":"a kind of lizard"}],"note":"spelled Batrachoceps on the course list"},
+  "beldingi": {"gloss":"Belding's","roots":[{"form":"Lyman Belding","lang":"person","meaning":"California field ornithologist"}]},
+  "bendirii": {"gloss":"Bendire's","roots":[{"form":"Charles Bendire","lang":"person","meaning":"army officer and egg collector in the Northwest"}]},
+  "bicinctores": {"gloss":"twice-girdled","roots":[{"form":"bini","lang":"Latin","meaning":"two together"},{"form":"cingere","lang":"Latin","meaning":"to gird, encircle"}],"note":"the two black collars"},
+  "binoculata": {"gloss":"two-eyed","roots":[{"form":"bini","lang":"Latin","meaning":"two together"},{"form":"oculus","lang":"Latin","meaning":"eye"}],"note":"an eyespot on each wing"},
+  "Boidae": {"gloss":"boas","roots":[{"form":"boa","lang":"Latin","meaning":"a large snake (in Pliny)"}]},
+  "Bombycilla": {"gloss":"silk tail","roots":[{"form":"bombyx","lang":"Greek","meaning":"silk, silkworm"},{"form":"cilla","lang":"New Latin","meaning":"tail, a word born from a misreading of Motacilla"}]},
+  "Bombycillidae": {"gloss":"","roots":[{"form":"bombyx","lang":"Greek","meaning":"silk, silkworm"},{"form":"cilla","lang":"New Latin","meaning":"tail, a word born from a misreading of Motacilla"}],"from":"Bombycilla"},
+  "Bonasa": {"gloss":"bison","roots":[{"form":"bonasus","lang":"Latin","meaning":"bison, wild bull"}],"note":"perhaps for drumming that sounds like bellowing","unsure":true},
+  "boreas": {"gloss":"of the north","roots":[{"form":"Boreas","lang":"Greek","meaning":"the north wind"}]},
+  "Botaurus": {"gloss":"ox bull","roots":[{"form":"bos","lang":"Latin","meaning":"ox"},{"form":"taurus","lang":"Latin","meaning":"bull"}],"note":"a medieval reshaping of butaurus, bittern, to fit the booming call","unsure":true},
+  "bottae": {"gloss":"Botta's","roots":[{"form":"Paolo Emilio Botta","lang":"person","meaning":"Italian naturalist, later excavator of Assyrian Khorsabad"}]},
+  "boylii": {"gloss":"Boyle's","roots":[{"form":"Dr. Boyle","lang":"person","meaning":"the physician who collected the first specimens in Gold Rush California"}],"note":"the sources I checked disagree about his first names","unsure":true},
+  "brachyrhynchos": {"gloss":"short beak","roots":[{"form":"brachys","lang":"Greek","meaning":"short"},{"form":"rhynchos","lang":"Greek","meaning":"snout, beak"}]},
+  "Branta": {"gloss":"burnt goose","roots":[{"form":"brandgas","lang":"Old Norse","meaning":"burnt goose, for the dark plumage"}]},
+  "Bubo": {"gloss":"owl","roots":[{"form":"bubo","lang":"Latin","meaning":"eagle owl, from its call"}]},
+  "Bucephala": {"gloss":"bull head","roots":[{"form":"bous","lang":"Greek","meaning":"ox, bull"},{"form":"kephale","lang":"Greek","meaning":"head"}],"note":"bufflehead is the same thought in English"},
+  "Bufonidae": {"gloss":"toads","roots":[{"form":"bufo","lang":"Latin","meaning":"toad"}]},
+  "bulbivorus": {"gloss":"bulb eater","roots":[{"form":"bulbus","lang":"Latin","meaning":"bulb"},{"form":"vorare","lang":"Latin","meaning":"to devour"}],"note":"camas, in the Willamette Valley"},
+  "bullockii": {"gloss":"Bullock's","roots":[{"form":"William Bullock","lang":"person","meaning":"English showman and collector who traveled Mexico"}]},
+  "Buteo": {"gloss":"buzzard","roots":[{"form":"buteo","lang":"Latin","meaning":"a kind of hawk, buzzard"}]},
+  "calendula": {"gloss":"little lark, or marigold","roots":[{"form":"calendula","lang":"uncertain","meaning":"perhaps a little lark, for the song; perhaps the marigold or a headdress, for the crown"}],"note":"the dictionaries of bird names offer several readings and settle on none","unsure":true},
+  "californica": {"gloss":"of California","roots":[{"form":"California","lang":"place","meaning":""}]},
+  "californicus": {"gloss":"of California","roots":[{"form":"California","lang":"place","meaning":""}]},
+  "Callipepla": {"gloss":"beautiful robe","roots":[{"form":"kallos","lang":"Greek","meaning":"beauty"},{"form":"peplos","lang":"Greek","meaning":"robe"}]},
+  "calva": {"gloss":"bald","roots":[{"form":"calvus","lang":"Latin","meaning":"bald"}],"note":"the scaleless head"},
+  "Calypte": {"gloss":"veiled","roots":[{"form":"kalyptre","lang":"Greek","meaning":"veil, head covering"}],"note":"the male's hood"},
+  "canadensis": {"gloss":"of Canada","roots":[{"form":"Canada","lang":"place","meaning":""}]},
+  "Canidae": {"gloss":"","roots":[{"form":"canis","lang":"Latin","meaning":"dog"}],"from":"Canis"},
+  "Canis": {"gloss":"dog","roots":[{"form":"canis","lang":"Latin","meaning":"dog"}]},
+  "Caretta": {"gloss":"turtle","roots":[{"form":"caret","lang":"French, from a Caribbean language","meaning":"sea turtle, tortoiseshell"}],"note":"Latinized from French caret, itself borrowed in the West Indies","unsure":true},
+  "caretta": {"gloss":"turtle","roots":[{"form":"caret","lang":"French, from a Caribbean language","meaning":"sea turtle, tortoiseshell"}],"note":"turtle turtle"},
+  "Carnivora": {"gloss":"flesh eaters","roots":[{"form":"caro","lang":"Latin","meaning":"flesh, meat"},{"form":"vorare","lang":"Latin","meaning":"to devour"}]},
+  "carolinensis": {"gloss":"of Carolina","roots":[{"form":"Carolina","lang":"place","meaning":""}]},
+  "carpio": {"gloss":"carp","roots":[{"form":"carpa","lang":"Late Latin, from Germanic","meaning":"carp"}],"note":"so Cyprinus carpio is carp carp, in two languages"},
+  "cascadae": {"gloss":"of the Cascades","roots":[{"form":"the Cascade Range","lang":"place","meaning":""}]},
+  "Castor": {"gloss":"beaver","roots":[{"form":"kastor","lang":"Greek","meaning":"beaver"}]},
+  "Castoridae": {"gloss":"","roots":[{"form":"kastor","lang":"Greek","meaning":"beaver"}],"from":"Castor"},
+  "catenifer": {"gloss":"chain-bearing","roots":[{"form":"catena","lang":"Latin","meaning":"chain"},{"form":"ferre","lang":"Latin","meaning":"to carry, bear"}]},
+  "catesbeianus": {"gloss":"Catesby's","roots":[{"form":"Mark Catesby","lang":"person","meaning":"English naturalist of the Carolinas"}]},
+  "Cathartes": {"gloss":"purifier","roots":[{"form":"kathartes","lang":"Greek","meaning":"cleanser, purifier"}]},
+  "Cathartidae": {"gloss":"","roots":[{"form":"kathartes","lang":"Greek","meaning":"cleanser, purifier"}],"from":"Cathartes"},
+  "Catostomidae": {"gloss":"","roots":[{"form":"kato","lang":"Greek","meaning":"down, below"},{"form":"stoma","lang":"Greek","meaning":"mouth"}],"from":"Catostomus"},
+  "Catostomus": {"gloss":"mouth below","roots":[{"form":"kato","lang":"Greek","meaning":"down, below"},{"form":"stoma","lang":"Greek","meaning":"mouth"}]},
+  "caurina": {"gloss":"northwestern","roots":[{"form":"caurus","lang":"Latin","meaning":"the northwest wind"}]},
+  "cedrorum": {"gloss":"of the cedars","roots":[{"form":"cedrus","lang":"Latin","meaning":"cedar"}]},
+  "Centrarchidae": {"gloss":"spiny vents","roots":[{"form":"kentron","lang":"Greek","meaning":"sharp point, spine"},{"form":"archos","lang":"Greek","meaning":"anus"}],"note":"spines at the front of the anal fin"},
+  "Centrocercus": {"gloss":"spine tail","roots":[{"form":"kentron","lang":"Greek","meaning":"sharp point, spine"},{"form":"kerkos","lang":"Greek","meaning":"tail"}]},
+  "Certhia": {"gloss":"creeper","roots":[{"form":"kerthios","lang":"Greek","meaning":"a small tree-dwelling bird, in Aristotle"}]},
+  "Certhiidae": {"gloss":"","roots":[{"form":"kerthios","lang":"Greek","meaning":"a small tree-dwelling bird, in Aristotle"}],"from":"Certhia"},
+  "Cervidae": {"gloss":"","roots":[{"form":"cervus","lang":"Latin","meaning":"stag, deer"}],"from":"Cervus"},
+  "Cervus": {"gloss":"stag","roots":[{"form":"cervus","lang":"Latin","meaning":"stag, deer"}]},
+  "Charadriidae": {"gloss":"","roots":[{"form":"charadra","lang":"Greek","meaning":"ravine, gully"}],"from":"Charadrius"},
+  "Charadriiformes": {"gloss":"plover-shaped","roots":[{"form":"charadra","lang":"Greek","meaning":"ravine, gully"},{"form":"forma","lang":"Latin","meaning":"shape, form"}]},
+  "Charadrius": {"gloss":"ravine bird","roots":[{"form":"charadra","lang":"Greek","meaning":"ravine, gully"}]},
+  "Charina": {"gloss":"graceful","roots":[{"form":"charis","lang":"Greek","meaning":"grace, charm"}]},
+  "Chelonia": {"gloss":"tortoise","roots":[{"form":"chelys","lang":"Greek","meaning":"tortoise, turtle"}]},
+  "Cheloniidae": {"gloss":"","roots":[{"form":"chelys","lang":"Greek","meaning":"tortoise, turtle"}],"from":"Chelonia"},
+  "Chelydra": {"gloss":"water tortoise","roots":[{"form":"chelys","lang":"Greek","meaning":"tortoise, turtle"}],"note":"from chelydros, a water tortoise or water snake; the course list reads it as chelys plus drao, to act"},
+  "Chelydridae": {"gloss":"","roots":[{"form":"chelys","lang":"Greek","meaning":"tortoise, turtle"}],"from":"Chelydra"},
+  "Chimaeridae": {"gloss":"","roots":[{"form":"chimaira","lang":"Greek","meaning":"the Chimera, a monster made of three animals (literally a she-goat)"}],"from":"Chimaeriformes"},
+  "Chimaeriformes": {"gloss":"chimera-shaped","roots":[{"form":"chimaira","lang":"Greek","meaning":"the Chimera, a monster made of three animals (literally a she-goat)"},{"form":"forma","lang":"Latin","meaning":"shape, form"}]},
+  "Chiroptera": {"gloss":"hand wings","roots":[{"form":"cheir","lang":"Greek","meaning":"hand"},{"form":"pteron","lang":"Greek","meaning":"wing, fin"}]},
+  "Chondrichthyes": {"gloss":"cartilage fishes","roots":[{"form":"chondros","lang":"Greek","meaning":"cartilage, gristle"},{"form":"ichthys","lang":"Greek","meaning":"fish"}]},
+  "Chondrostei": {"gloss":"cartilage bone","roots":[{"form":"chondros","lang":"Greek","meaning":"cartilage, gristle"},{"form":"osteon","lang":"Greek","meaning":"bone"}],"note":"skeletons mostly cartilage"},
+  "chrysaetos": {"gloss":"golden eagle","roots":[{"form":"chrysos","lang":"Greek","meaning":"gold"},{"form":"aetos","lang":"Greek","meaning":"eagle"}]},
+  "Chrysemys": {"gloss":"golden turtle","roots":[{"form":"chrysos","lang":"Greek","meaning":"gold"},{"form":"emys","lang":"Greek","meaning":"freshwater turtle"}]},
+  "cinereoargenteus": {"gloss":"ash and silver","roots":[{"form":"cinis","lang":"Latin","meaning":"ashes"},{"form":"argentum","lang":"Latin","meaning":"silver"}]},
+  "cinerius": {"gloss":"ash-gray","roots":[{"form":"cinis","lang":"Latin","meaning":"ashes"}],"note":"properly spelled cinereus"},
+  "Circus": {"gloss":"circler","roots":[{"form":"kirkos","lang":"Greek","meaning":"a hawk that wheels; also a ring, a circle"}],"note":"the same word as circle and circus"},
+  "clamitans": {"gloss":"crying out loudly","roots":[{"form":"clamare","lang":"Latin","meaning":"to cry out, shout"}]},
+  "clypeata": {"gloss":"shield-bearing","roots":[{"form":"clipeus","lang":"Latin","meaning":"round shield"}]},
+  "coerulea": {"gloss":"sky blue","roots":[{"form":"caeruleus","lang":"Latin","meaning":"sky blue"}]},
+  "Colaptes": {"gloss":"chiseller","roots":[{"form":"kolaptes","lang":"Greek","meaning":"chiseller"}]},
+  "colliei": {"gloss":"Collie's","roots":[{"form":"Alexander Collie","lang":"person","meaning":"surgeon and naturalist aboard HMS Blossom, 1825 to 1828"}]},
+  "Coluber": {"gloss":"snake","roots":[{"form":"coluber","lang":"Latin","meaning":"snake"}]},
+  "Colubridae": {"gloss":"","roots":[{"form":"coluber","lang":"Latin","meaning":"snake"}],"from":"Coluber"},
+  "Columba": {"gloss":"dove","roots":[{"form":"columba","lang":"Latin","meaning":"dove, pigeon"}]},
+  "columbianus": {"gloss":"of the Columbia","roots":[{"form":"the Columbia River","lang":"place","meaning":""}]},
+  "Columbidae": {"gloss":"","roots":[{"form":"columba","lang":"Latin","meaning":"dove, pigeon"}],"from":"Columba"},
+  "Columbiformes": {"gloss":"dove-shaped","roots":[{"form":"columba","lang":"Latin","meaning":"dove, pigeon"},{"form":"forma","lang":"Latin","meaning":"shape, form"}]},
+  "concolor": {"gloss":"of one color","roots":[{"form":"con-","lang":"Latin","meaning":"together, with"},{"form":"color","lang":"Latin","meaning":"color"}]},
+  "constrictor": {"gloss":"squeezer","roots":[{"form":"constringere","lang":"Latin","meaning":"to draw tight"}],"note":"the racer does not constrict"},
+  "Contia": {"gloss":"LeConte's","roots":[{"form":"John Lawrence LeConte","lang":"person","meaning":"American entomologist"}]},
+  "cooperii": {"gloss":"Cooper's","roots":[{"form":"William Cooper","lang":"person","meaning":"New York naturalist, a founder of the Lyceum of Natural History"}]},
+  "copei": {"gloss":"Cope's","roots":[{"form":"Edward Drinker Cope","lang":"person","meaning":"Philadelphia paleontologist and herpetologist"}]},
+  "Coraciiformes": {"gloss":"raven-like ones","roots":[{"form":"korax","lang":"Greek","meaning":"raven"},{"form":"forma","lang":"Latin","meaning":"shape, form"}],"note":"from korakias, a chough"},
+  "corax": {"gloss":"raven","roots":[{"form":"korax","lang":"Greek","meaning":"raven"}],"note":"so Corvus corax is raven raven, Latin then Greek"},
+  "coriacea": {"gloss":"leathery","roots":[{"form":"corium","lang":"Latin","meaning":"leather, hide"}]},
+  "Corthylio": {"gloss":"an old bird name, reassigned","roots":[{"form":"korthylos","lang":"Greek","meaning":"a small crested bird, in Hesychius"}]},
+  "Corvidae": {"gloss":"","roots":[{"form":"corvus","lang":"Latin","meaning":"raven"}],"from":"Corvus"},
+  "Corvus": {"gloss":"raven","roots":[{"form":"corvus","lang":"Latin","meaning":"raven"}]},
+  "Cottidae": {"gloss":"","roots":[{"form":"kottos","lang":"Greek","meaning":"a small river fish, a bullhead"}],"from":"Cottus"},
+  "Cottus": {"gloss":"bullhead","roots":[{"form":"kottos","lang":"Greek","meaning":"a small river fish, a bullhead"}]},
+  "coypus": {"gloss":"the Mapuche name, kept","roots":[{"form":"coipu","lang":"Mapudungun","meaning":"the nutria"}]},
+  "crecca": {"gloss":"the sound it makes","roots":[{"form":"kricka","lang":"Swedish","meaning":"teal, from its call"}]},
+  "Cricetidae": {"gloss":"hamsters","roots":[{"form":"cricetus","lang":"New Latin, from Slavic","meaning":"hamster"}]},
+  "Crocodylia": {"gloss":"pebble worms","roots":[{"form":"kroke","lang":"Greek","meaning":"pebble"},{"form":"drilos","lang":"Greek","meaning":"worm"}],"note":"lizards basking on shingle, then the Nile crocodile"},
+  "Crotalus": {"gloss":"rattle","roots":[{"form":"krotalon","lang":"Greek","meaning":"rattle, castanet"}]},
+  "Crotaphytidae": {"gloss":"","roots":[{"form":"krotaphos","lang":"Greek","meaning":"the temple, side of the head"},{"form":"phyton","lang":"Greek","meaning":"creature, growing thing"}],"from":"Crotaphytus"},
+  "Crotaphytus": {"gloss":"big-templed creature","roots":[{"form":"krotaphos","lang":"Greek","meaning":"the temple, side of the head"},{"form":"phyton","lang":"Greek","meaning":"creature, growing thing"}],"note":"the reading given on the course list"},
+  "Cryptobranchidae": {"gloss":"","roots":[{"form":"kryptos","lang":"Greek","meaning":"hidden"},{"form":"branchia","lang":"Greek","meaning":"gills"}],"from":"Cryptobranchus"},
+  "Cryptobranchus": {"gloss":"hidden gills","roots":[{"form":"kryptos","lang":"Greek","meaning":"hidden"},{"form":"branchia","lang":"Greek","meaning":"gills"}]},
+  "cyanocephalus": {"gloss":"blue head","roots":[{"form":"kyanos","lang":"Greek","meaning":"dark blue"},{"form":"kephale","lang":"Greek","meaning":"head"}]},
+  "Cyanocitta": {"gloss":"blue jay","roots":[{"form":"kyanos","lang":"Greek","meaning":"dark blue"},{"form":"kitta","lang":"Greek","meaning":"jay, chattering bird"}]},
+  "Cyprinidae": {"gloss":"","roots":[{"form":"kyprinos","lang":"Greek","meaning":"carp"}],"from":"Cyprinus"},
+  "Cypriniformes": {"gloss":"carp-shaped","roots":[{"form":"kyprinos","lang":"Greek","meaning":"carp"},{"form":"forma","lang":"Latin","meaning":"shape, form"}]},
+  "Cyprinus": {"gloss":"carp","roots":[{"form":"kyprinos","lang":"Greek","meaning":"carp"}]},
+  "delawarensis": {"gloss":"of the Delaware","roots":[{"form":"the Delaware River","lang":"place","meaning":""}]},
+  "Dermochelyidae": {"gloss":"","roots":[{"form":"derma","lang":"Greek","meaning":"skin, hide"},{"form":"chelys","lang":"Greek","meaning":"tortoise, turtle"}],"from":"Dermochelys"},
+  "Dermochelys": {"gloss":"skin turtle","roots":[{"form":"derma","lang":"Greek","meaning":"skin, hide"},{"form":"chelys","lang":"Greek","meaning":"tortoise, turtle"}],"note":"no hard scutes, only leathery skin"},
+  "Diadophis": {"gloss":"diadem snake","roots":[{"form":"diadema","lang":"Greek","meaning":"headband, diadem"},{"form":"ophis","lang":"Greek","meaning":"snake"}]},
+  "Dicamptodon": {"gloss":"doubly curved tooth","roots":[{"form":"di-","lang":"Greek","meaning":"two, twice"},{"form":"kamptos","lang":"Greek","meaning":"bent, curved"},{"form":"odous","lang":"Greek","meaning":"tooth"}]},
+  "Dicamptodontidae": {"gloss":"","roots":[{"form":"di-","lang":"Greek","meaning":"two, twice"},{"form":"kamptos","lang":"Greek","meaning":"bent, curved"},{"form":"odous","lang":"Greek","meaning":"tooth"}],"from":"Dicamptodon"},
+  "Didelphidae": {"gloss":"","roots":[{"form":"di-","lang":"Greek","meaning":"two, twice"},{"form":"delphys","lang":"Greek","meaning":"womb"}],"from":"Didelphis"},
+  "Didelphimorphia": {"gloss":"two-womb-shaped","roots":[{"form":"di-","lang":"Greek","meaning":"two, twice"},{"form":"delphys","lang":"Greek","meaning":"womb"},{"form":"morphe","lang":"Greek","meaning":"form, shape"}]},
+  "Didelphis": {"gloss":"two wombs","roots":[{"form":"di-","lang":"Greek","meaning":"two, twice"},{"form":"delphys","lang":"Greek","meaning":"womb"}],"note":"the pouch counted as a second"},
+  "Diomedeidae": {"gloss":"Diomedes's birds","roots":[{"form":"Diomedes","lang":"Greek","meaning":"hero of the Trojan War; his grieving companions became seabirds"}]},
+  "Dipodomys": {"gloss":"two-footed mouse","roots":[{"form":"di-","lang":"Greek","meaning":"two, twice"},{"form":"pous","lang":"Greek","meaning":"foot"},{"form":"mys","lang":"Greek","meaning":"mouse"}]},
+  "dorsatum": {"gloss":"of the back","roots":[{"form":"dorsum","lang":"Latin","meaning":"the back"}],"note":"where the quills are"},
+  "douglasii": {"gloss":"Douglas's","roots":[{"form":"David Douglas","lang":"person","meaning":"Scottish plant collector of the Pacific Northwest; the Douglas-fir is his"}]},
+  "Dryobates": {"gloss":"tree walker","roots":[{"form":"drys","lang":"Greek","meaning":"tree, oak"},{"form":"bates","lang":"Greek","meaning":"one who walks or treads"}]},
+  "Dryocopus": {"gloss":"tree striker","roots":[{"form":"drys","lang":"Greek","meaning":"tree, oak"},{"form":"kopos","lang":"Greek","meaning":"striking, a blow"}]},
+  "dunni": {"gloss":"Dunn's","roots":[{"form":"Emmett Reid Dunn","lang":"person","meaning":"herpetologist, the authority on this family"}]},
+  "Echimyidae": {"gloss":"hedgehog mice","roots":[{"form":"echinos","lang":"Greek","meaning":"hedgehog, sea urchin"},{"form":"mys","lang":"Greek","meaning":"mouse"}]},
+  "Elasmobranchii": {"gloss":"plate gills","roots":[{"form":"elasmos","lang":"Greek","meaning":"beaten metal plate"},{"form":"branchia","lang":"Greek","meaning":"gills"}]},
+  "elegans": {"gloss":"elegant","roots":[{"form":"elegans","lang":"Latin","meaning":"fine, choice"}]},
+  "Elgaria": {"gloss":"unexplained","roots":[{"form":"Elgaria","lang":"unknown","meaning":"unexplained"}],"note":"Gray coined it without comment; guesses include a person named Elgar and a play on alligator","unsure":true},
+  "Emydidae": {"gloss":"freshwater turtles","roots":[{"form":"emys","lang":"Greek","meaning":"freshwater turtle"}]},
+  "Ensatina": {"gloss":"sword-like","roots":[{"form":"ensis","lang":"Latin","meaning":"sword"}],"note":"Gray gave no reason","unsure":true},
+  "Entosphenus": {"gloss":"wedge within","roots":[{"form":"entos","lang":"Greek","meaning":"within, inside"},{"form":"sphen","lang":"Greek","meaning":"wedge"}],"note":"a wedge-shaped tooth plate inside the mouth"},
+  "Eptatretus": {"gloss":"seven holes","roots":[{"form":"hepta","lang":"Greek","meaning":"seven"},{"form":"tretos","lang":"Greek","meaning":"bored through, perforated"}],"note":"named for the row of gill openings; the Pacific hagfish itself has ten or more a side"},
+  "Erethizon": {"gloss":"the irritating one","roots":[{"form":"erethizein","lang":"Greek","meaning":"to provoke, irritate"}]},
+  "Erethizontidae": {"gloss":"","roots":[{"form":"erethizein","lang":"Greek","meaning":"to provoke, irritate"}],"from":"Erethizon"},
+  "eschscholtzii": {"gloss":"Eschscholtz's","roots":[{"form":"Johann Friedrich von Eschscholtz","lang":"person","meaning":"naturalist on the Kotzebue voyages; the California poppy is his too"}]},
+  "Eulipotyphla": {"gloss":"truly lacking the blind gut","roots":[{"form":"eu","lang":"Greek","meaning":"good, well, true"},{"form":"leipein","lang":"Greek","meaning":"to lack, leave behind"},{"form":"typhlos","lang":"Greek","meaning":"blind"}],"note":"no caecum"},
+  "Euphagus": {"gloss":"good eater","roots":[{"form":"eu","lang":"Greek","meaning":"good, well, true"},{"form":"phagein","lang":"Greek","meaning":"to eat"}]},
+  "Eureptilia": {"gloss":"true reptiles","roots":[{"form":"eu","lang":"Greek","meaning":"good, well, true"},{"form":"repere","lang":"Latin","meaning":"to creep, crawl"}]},
+  "Falco": {"gloss":"sickle","roots":[{"form":"falx","lang":"Latin","meaning":"sickle"}],"note":"for the curve of the talons, or of the wing"},
+  "Falconidae": {"gloss":"","roots":[{"form":"falx","lang":"Latin","meaning":"sickle"}],"from":"Falco"},
+  "Falconiformes": {"gloss":"falcon-shaped","roots":[{"form":"falx","lang":"Latin","meaning":"sickle"},{"form":"forma","lang":"Latin","meaning":"shape, form"}]},
+  "fasciata": {"gloss":"banded","roots":[{"form":"fascia","lang":"Latin","meaning":"band, strip"}]},
+  "Felidae": {"gloss":"cats","roots":[{"form":"felis","lang":"Latin","meaning":"cat"}]},
+  "ferreus": {"gloss":"iron-colored","roots":[{"form":"ferrum","lang":"Latin","meaning":"iron"}]},
+  "flavescens": {"gloss":"turning yellow","roots":[{"form":"flavus","lang":"Latin","meaning":"yellow, golden"}]},
+  "flaviventris": {"gloss":"yellow-bellied","roots":[{"form":"flavus","lang":"Latin","meaning":"yellow, golden"},{"form":"venter","lang":"Latin","meaning":"belly"}]},
+  "frantzii": {"gloss":"Frantzius's","roots":[{"form":"Alexander von Frantzius","lang":"person","meaning":"German physician and naturalist in Costa Rica"}]},
+  "frenata": {"gloss":"bridled","roots":[{"form":"frenum","lang":"Latin","meaning":"bridle"}],"note":"the face markings"},
+  "Fringillidae": {"gloss":"finches","roots":[{"form":"fringilla","lang":"Latin","meaning":"finch"}]},
+  "Fulica": {"gloss":"coot","roots":[{"form":"fulica","lang":"Latin","meaning":"coot"}]},
+  "furcata": {"gloss":"forked","roots":[{"form":"furca","lang":"Latin","meaning":"fork"}]},
+  "Galliformes": {"gloss":"rooster-shaped","roots":[{"form":"gallus","lang":"Latin","meaning":"rooster"},{"form":"forma","lang":"Latin","meaning":"shape, form"}]},
+  "Gambelia": {"gloss":"Gambel's","roots":[{"form":"William Gambel","lang":"person","meaning":"naturalist who crossed to California in 1841; Gambel's quail is also his"}]},
+  "Gasterosteidae": {"gloss":"","roots":[{"form":"gaster","lang":"Greek","meaning":"belly"},{"form":"osteon","lang":"Greek","meaning":"bone"}],"from":"Gasterosteus"},
+  "Gasterosteiformes": {"gloss":"bone-belly-shaped","roots":[{"form":"gaster","lang":"Greek","meaning":"belly"},{"form":"osteon","lang":"Greek","meaning":"bone"},{"form":"forma","lang":"Latin","meaning":"shape, form"}]},
+  "Gasterosteus": {"gloss":"bone belly","roots":[{"form":"gaster","lang":"Greek","meaning":"belly"},{"form":"osteon","lang":"Greek","meaning":"bone"}],"note":"bony plates along the sides and belly"},
+  "Gavia": {"gloss":"seabird","roots":[{"form":"gavia","lang":"Latin","meaning":"a seabird in Pliny"}]},
+  "Gaviidae": {"gloss":"","roots":[{"form":"gavia","lang":"Latin","meaning":"a seabird in Pliny"}],"from":"Gavia"},
+  "Gaviiformes": {"gloss":"loon-shaped","roots":[{"form":"gavia","lang":"Latin","meaning":"a seabird in Pliny"},{"form":"forma","lang":"Latin","meaning":"shape, form"}]},
+  "Geomyidae": {"gloss":"earth mice","roots":[{"form":"ge","lang":"Greek","meaning":"earth"},{"form":"mys","lang":"Greek","meaning":"mouse"}]},
+  "getula": {"gloss":"Gaetulian","roots":[{"form":"Gaetulia","lang":"place","meaning":"the land of the Gaetuli, in north Africa"}],"note":"one account says the chain pattern recalled a Gaetulian emblem; another calls it a mistake about where the snake came from","unsure":true},
+  "Glaucomys": {"gloss":"gray mouse","roots":[{"form":"glaukos","lang":"Greek","meaning":"gleaming gray, blue-gray"},{"form":"mys","lang":"Greek","meaning":"mouse"}]},
+  "gracile": {"gloss":"slender","roots":[{"form":"gracilis","lang":"Latin","meaning":"slender, thin"}]},
+  "graciosus": {"gloss":"graceful","roots":[{"form":"gratia","lang":"Latin","meaning":"grace, favor"}]},
+  "granulosa": {"gloss":"grainy","roots":[{"form":"granum","lang":"Latin","meaning":"grain, seed"}]},
+  "grisea": {"gloss":"gray","roots":[{"form":"griseus","lang":"Medieval Latin","meaning":"gray"}]},
+  "griseus": {"gloss":"gray","roots":[{"form":"griseus","lang":"Medieval Latin","meaning":"gray"}]},
+  "Gruidae": {"gloss":"","roots":[{"form":"grus","lang":"Latin","meaning":"crane"}],"from":"Gruiformes"},
+  "Gruiformes": {"gloss":"crane-shaped","roots":[{"form":"grus","lang":"Latin","meaning":"crane"},{"form":"forma","lang":"Latin","meaning":"shape, form"}]},
+  "Gymnophiona": {"gloss":"naked snakes","roots":[{"form":"gymnos","lang":"Greek","meaning":"naked"},{"form":"ophis","lang":"Greek","meaning":"snake"}]},
+  "Haemorhous": {"gloss":"blood rump","roots":[{"form":"haima","lang":"Greek","meaning":"blood"},{"form":"orrhos","lang":"Greek","meaning":"rump"}]},
+  "haliaetus": {"gloss":"sea eagle","roots":[{"form":"hals","lang":"Greek","meaning":"the sea, salt"},{"form":"aetos","lang":"Greek","meaning":"eagle"}]},
+  "hemionus": {"gloss":"half donkey","roots":[{"form":"hemi-","lang":"Greek","meaning":"half"},{"form":"onos","lang":"Greek","meaning":"donkey"}],"note":"that is, a mule: mule deer"},
+  "herodias": {"gloss":"heron","roots":[{"form":"erodios","lang":"Greek","meaning":"heron"}],"note":"so Ardea herodias is heron heron, Latin then Greek"},
+  "Heteromyidae": {"gloss":"different mice","roots":[{"form":"heteros","lang":"Greek","meaning":"other, different"},{"form":"mys","lang":"Greek","meaning":"mouse"}]},
+  "Holocephali": {"gloss":"whole heads","roots":[{"form":"holos","lang":"Greek","meaning":"whole, entire"},{"form":"kephale","lang":"Greek","meaning":"head"}],"note":"the upper jaw is fused to the skull"},
+  "hudsonius": {"gloss":"of Hudson Bay","roots":[{"form":"Hudson Bay","lang":"place","meaning":""}]},
+  "hutchinsii": {"gloss":"Hutchins's","roots":[{"form":"Thomas Hutchins","lang":"person","meaning":"Hudson's Bay Company surgeon and observer"}]},
+  "Hydrolagus": {"gloss":"water hare","roots":[{"form":"hydor","lang":"Greek","meaning":"water"},{"form":"lagos","lang":"Greek","meaning":"hare"}],"note":"ratfish, rabbitfish: every language reaches for a mammal"},
+  "hyemalis": {"gloss":"of winter","roots":[{"form":"hiems","lang":"Latin","meaning":"winter"}]},
+  "Hylidae": {"gloss":"of the woods","roots":[{"form":"hyle","lang":"Greek","meaning":"wood, forest"}]},
+  "Hypsiglena": {"gloss":"high pupil","roots":[{"form":"hypsi","lang":"Greek","meaning":"high, aloft"},{"form":"glene","lang":"Greek","meaning":"pupil, eyeball"}],"note":"the vertical slit"},
+  "Ictaluridae": {"gloss":"fish cats","roots":[{"form":"ichthys","lang":"Greek","meaning":"fish"},{"form":"ailouros","lang":"Greek","meaning":"cat"}]},
+  "Icteridae": {"gloss":"","roots":[{"form":"ikteros","lang":"Greek","meaning":"jaundice; also a yellow bird whose glance was said to cure it"}],"from":"Icterus"},
+  "Icterus": {"gloss":"jaundice bird","roots":[{"form":"ikteros","lang":"Greek","meaning":"jaundice; also a yellow bird whose glance was said to cure it"}]},
+  "immer": {"gloss":"the Norse name","roots":[{"form":"immer","lang":"Norwegian","meaning":"the great northern diver"}],"note":"its further origin is disputed","unsure":true},
+  "intermontana": {"gloss":"between the mountains","roots":[{"form":"inter","lang":"Latin","meaning":"between, among"},{"form":"mons","lang":"Latin","meaning":"mountain"}]},
+  "jamaicensis": {"gloss":"of Jamaica","roots":[{"form":"Jamaica","lang":"place","meaning":""}]},
+  "Junco": {"gloss":"rush","roots":[{"form":"iuncus","lang":"Latin","meaning":"rush, reed"}],"note":"an odd name for a bird of conifer woods"},
+  "kisutch": {"gloss":"the Kamchatkan name, kept","roots":[{"form":"kizhuch","lang":"Russian, from a Kamchatkan language","meaning":"the coho salmon"}]},
+  "Lacertilia": {"gloss":"lizards","roots":[{"form":"lacerta","lang":"Latin","meaning":"lizard"}]},
+  "Lagomorpha": {"gloss":"hare-shaped","roots":[{"form":"lagos","lang":"Greek","meaning":"hare"},{"form":"morphe","lang":"Greek","meaning":"form, shape"}]},
+  "Lampropeltis": {"gloss":"shining shields","roots":[{"form":"lampros","lang":"Greek","meaning":"shining, bright"},{"form":"pelte","lang":"Greek","meaning":"small shield"}],"note":"the glossy scales"},
+  "Laniidae": {"gloss":"","roots":[{"form":"lanius","lang":"Latin","meaning":"butcher"}],"from":"Lanius"},
+  "Lanius": {"gloss":"butcher","roots":[{"form":"lanius","lang":"Latin","meaning":"butcher"}]},
+  "Laridae": {"gloss":"","roots":[{"form":"laros","lang":"Greek","meaning":"a greedy seabird"}],"from":"Larus"},
+  "larselli": {"gloss":"Larsell's","roots":[{"form":"Olof Larsell","lang":"person","meaning":"anatomist at the University of Oregon Medical School"}]},
+  "Larus": {"gloss":"gull","roots":[{"form":"laros","lang":"Greek","meaning":"a greedy seabird"}]},
+  "Lasiurus": {"gloss":"hairy tail","roots":[{"form":"lasios","lang":"Greek","meaning":"shaggy, hairy"},{"form":"oura","lang":"Greek","meaning":"tail"}]},
+  "latrans": {"gloss":"barking","roots":[{"form":"latrare","lang":"Latin","meaning":"to bark"}]},
+  "lentiginosus": {"gloss":"freckled","roots":[{"form":"lentigo","lang":"Latin","meaning":"freckle (from lens, a lentil)"}]},
+  "Lepidochelys": {"gloss":"scaly turtle","roots":[{"form":"lepis","lang":"Greek","meaning":"scale"},{"form":"chelys","lang":"Greek","meaning":"tortoise, turtle"}]},
+  "Lepisosteidae": {"gloss":"","roots":[{"form":"lepis","lang":"Greek","meaning":"scale"},{"form":"osteon","lang":"Greek","meaning":"bone"}],"from":"Lepisosteus"},
+  "Lepisosteiformes": {"gloss":"bone-scale-shaped","roots":[{"form":"lepis","lang":"Greek","meaning":"scale"},{"form":"osteon","lang":"Greek","meaning":"bone"},{"form":"forma","lang":"Latin","meaning":"shape, form"}]},
+  "Lepisosteus": {"gloss":"bone scale","roots":[{"form":"lepis","lang":"Greek","meaning":"scale"},{"form":"osteon","lang":"Greek","meaning":"bone"}],"note":"armored in hard ganoid scales"},
+  "Lepomis": {"gloss":"scaled lid","roots":[{"form":"lepis","lang":"Greek","meaning":"scale"},{"form":"poma","lang":"Greek","meaning":"lid, cover"}],"note":"scales on the gill cover"},
+  "Leporidae": {"gloss":"","roots":[{"form":"lepus","lang":"Latin","meaning":"hare"}],"from":"Lepus"},
+  "Lepus": {"gloss":"hare","roots":[{"form":"lepus","lang":"Latin","meaning":"hare"}]},
+  "Leuconotopicus": {"gloss":"white-backed woodpecker","roots":[{"form":"leukos","lang":"Greek","meaning":"white"},{"form":"notos","lang":"Greek","meaning":"the back"},{"form":"picus","lang":"Latin","meaning":"woodpecker; Picus, whom Circe turned into one"}]},
+  "Lithobates": {"gloss":"stone walker","roots":[{"form":"lithos","lang":"Greek","meaning":"stone"},{"form":"bates","lang":"Greek","meaning":"one who walks or treads"}]},
+  "livia": {"gloss":"blue-gray","roots":[{"form":"lividus","lang":"Latin","meaning":"bluish, lead-colored"}]},
+  "longicaudus": {"gloss":"long-tailed","roots":[{"form":"longus","lang":"Latin","meaning":"long"},{"form":"cauda","lang":"Latin","meaning":"tail"}]},
+  "Lontra": {"gloss":"otter","roots":[{"form":"lontra","lang":"Italian and Portuguese, from Latin lutra","meaning":"otter"}]},
+  "lotor": {"gloss":"washer","roots":[{"form":"lavare","lang":"Latin","meaning":"to wash"}]},
+  "lucifugus": {"gloss":"light-fleeing","roots":[{"form":"lux","lang":"Latin","meaning":"light"},{"form":"fugere","lang":"Latin","meaning":"to flee"}]},
+  "ludovicianus": {"gloss":"of Louisiana","roots":[{"form":"Louisiana","lang":"place","meaning":"named for Louis XIV, Ludovicus in Latin"}]},
+  "lupus": {"gloss":"wolf","roots":[{"form":"lupus","lang":"Latin","meaning":"wolf"}]},
+  "luteiventris": {"gloss":"yellow-bellied","roots":[{"form":"luteus","lang":"Latin","meaning":"deep yellow"},{"form":"venter","lang":"Latin","meaning":"belly"}]},
+  "Lynx": {"gloss":"lynx","roots":[{"form":"lynx","lang":"Greek","meaning":"lynx, perhaps the bright-eyed one"}]},
+  "macrodactylum": {"gloss":"long-toed","roots":[{"form":"makros","lang":"Greek","meaning":"long, large"},{"form":"daktylos","lang":"Greek","meaning":"finger, toe"}],"note":"this is the salamander you found under the stump at Tualatin"},
+  "macroura": {"gloss":"long tail","roots":[{"form":"makros","lang":"Greek","meaning":"long, large"},{"form":"oura","lang":"Greek","meaning":"tail"}]},
+  "maculatus": {"gloss":"spotted","roots":[{"form":"macula","lang":"Latin","meaning":"spot, stain"}]},
+  "Mammalia": {"gloss":"the breasted ones","roots":[{"form":"mamma","lang":"Latin","meaning":"breast"}]},
+  "maniculatus": {"gloss":"small-handed","roots":[{"form":"manus","lang":"Latin","meaning":"hand"}]},
+  "Mareca": {"gloss":"duck, in Portuguese","roots":[{"form":"marreca","lang":"Portuguese","meaning":"a small duck"}]},
+  "marmorata": {"gloss":"marbled","roots":[{"form":"marmor","lang":"Latin","meaning":"marble"}]},
+  "Marmota": {"gloss":"mountain mouse","roots":[{"form":"marmotta","lang":"Romance, from Latin","meaning":"marmot, probably from mus montis, mountain mouse"}],"unsure":true},
+  "Martes": {"gloss":"marten","roots":[{"form":"martes","lang":"Latin","meaning":"marten"}]},
+  "Masticophis": {"gloss":"whip snake","roots":[{"form":"mastix","lang":"Greek","meaning":"whip"},{"form":"ophis","lang":"Greek","meaning":"snake"}]},
+  "Megaceryle": {"gloss":"great kingfisher","roots":[{"form":"megas","lang":"Greek","meaning":"great"},{"form":"kerylos","lang":"Greek","meaning":"a seabird of myth, paired with the halcyon"}]},
+  "melas": {"gloss":"black","roots":[{"form":"melas","lang":"Greek","meaning":"black"}]},
+  "melodia": {"gloss":"melody","roots":[{"form":"meloidia","lang":"Greek","meaning":"singing, a song"}]},
+  "Melospiza": {"gloss":"song finch","roots":[{"form":"melos","lang":"Greek","meaning":"song, tune"},{"form":"spiza","lang":"Greek","meaning":"finch"}]},
+  "Mephitidae": {"gloss":"","roots":[{"form":"mephitis","lang":"Latin","meaning":"a foul vapor from the earth"}],"from":"Mephitis"},
+  "Mephitis": {"gloss":"stench","roots":[{"form":"mephitis","lang":"Latin","meaning":"a foul vapor from the earth"}]},
+  "mephitis": {"gloss":"stench","roots":[{"form":"mephitis","lang":"Latin","meaning":"a foul vapor from the earth"}],"note":"stench stench: no one could accuse it of understatement"},
+  "merganser": {"gloss":"diving goose","roots":[{"form":"mergere","lang":"Latin","meaning":"to dive, plunge"},{"form":"anser","lang":"Latin","meaning":"goose"}]},
+  "Mergus": {"gloss":"diver","roots":[{"form":"mergere","lang":"Latin","meaning":"to dive, plunge"}]},
+  "mexicanus": {"gloss":"of Mexico","roots":[{"form":"Mexico","lang":"place","meaning":""}]},
+  "Micropterus": {"gloss":"small fin","roots":[{"form":"mikros","lang":"Greek","meaning":"small"},{"form":"pteron","lang":"Greek","meaning":"wing, fin"}],"note":"the type specimen had a torn fin that looked like a small extra one"},
+  "Microtus": {"gloss":"small ear","roots":[{"form":"mikros","lang":"Greek","meaning":"small"},{"form":"ous","lang":"Greek","meaning":"ear"}]},
+  "migratorius": {"gloss":"migrating","roots":[{"form":"migrare","lang":"Latin","meaning":"to move from place to place"}]},
+  "minimus": {"gloss":"smallest","roots":[{"form":"minimus","lang":"Latin","meaning":"smallest"}]},
+  "mississippiensis": {"gloss":"of the Mississippi","roots":[{"form":"the Mississippi","lang":"place","meaning":""}]},
+  "montanus": {"gloss":"of the mountains","roots":[{"form":"mons","lang":"Latin","meaning":"mountain"}]},
+  "multicarinata": {"gloss":"many-keeled","roots":[{"form":"multus","lang":"Latin","meaning":"many"},{"form":"carina","lang":"Latin","meaning":"keel"}],"note":"a ridge down every scale"},
+  "Mustela": {"gloss":"weasel","roots":[{"form":"mustela","lang":"Latin","meaning":"weasel"}]},
+  "Mustelidae": {"gloss":"","roots":[{"form":"mustela","lang":"Latin","meaning":"weasel"}],"from":"Mustela"},
+  "mydas": {"gloss":"unexplained","roots":[{"form":"mydas","lang":"uncertain","meaning":"unexplained"}],"note":"read variously as Greek for wetness, as King Midas, and as a garbled emys","unsure":true},
+  "Myocastor": {"gloss":"mouse beaver","roots":[{"form":"mys","lang":"Greek","meaning":"mouse"},{"form":"kastor","lang":"Greek","meaning":"beaver"}]},
+  "Myodes": {"gloss":"mouse-like","roots":[{"form":"mys","lang":"Greek","meaning":"mouse"},{"form":"-oeides","lang":"Greek","meaning":"resembling, having the form of"}]},
+  "Myotis": {"gloss":"mouse ear","roots":[{"form":"mys","lang":"Greek","meaning":"mouse"},{"form":"ous","lang":"Greek","meaning":"ear"}]},
+  "Myxini": {"gloss":"the slimy ones","roots":[{"form":"myxa","lang":"Greek","meaning":"slime, mucus"}]},
+  "Myxinidae": {"gloss":"","roots":[{"form":"myxa","lang":"Greek","meaning":"slime, mucus"}],"from":"Myxini"},
+  "Myxiniformes": {"gloss":"slime-shaped","roots":[{"form":"myxa","lang":"Greek","meaning":"slime, mucus"},{"form":"forma","lang":"Latin","meaning":"shape, form"}]},
+  "Nannopterum": {"gloss":"dwarf wing","roots":[{"form":"nannos","lang":"Greek","meaning":"dwarf"},{"form":"pteron","lang":"Greek","meaning":"wing, fin"}],"note":"coined for the flightless cormorant of the Galapagos"},
+  "Necturus": {"gloss":"swimming tail","roots":[{"form":"nektos","lang":"Greek","meaning":"swimming"},{"form":"oura","lang":"Greek","meaning":"tail"}]},
+  "Neopterygii": {"gloss":"new fins","roots":[{"form":"neos","lang":"Greek","meaning":"new"},{"form":"pteryx","lang":"Greek","meaning":"wing, fin"}]},
+  "Neotamias": {"gloss":"new storer","roots":[{"form":"neos","lang":"Greek","meaning":"new"},{"form":"tamias","lang":"Greek","meaning":"steward, one who stores and hands out"}]},
+  "Neovison": {"gloss":"new mink","roots":[{"form":"neos","lang":"Greek","meaning":"new"},{"form":"vison","lang":"French","meaning":"mink"}]},
+  "niger": {"gloss":"black","roots":[{"form":"niger","lang":"Latin","meaning":"black"}]},
+  "nigripes": {"gloss":"black foot","roots":[{"form":"niger","lang":"Latin","meaning":"black"},{"form":"pes","lang":"Latin","meaning":"foot"}]},
+  "nuttallii": {"gloss":"Nuttall's","roots":[{"form":"Thomas Nuttall","lang":"person","meaning":"English botanist and ornithologist who crossed with Townsend in 1834"}]},
+  "occidentalis": {"gloss":"western","roots":[{"form":"occidens","lang":"Latin","meaning":"the setting sun, the west"}]},
+  "Ochotona": {"gloss":"the Mongolian name, kept","roots":[{"form":"ogotno","lang":"Mongolian","meaning":"pika"}]},
+  "Ochotonidae": {"gloss":"","roots":[{"form":"ogotno","lang":"Mongolian","meaning":"pika"}],"from":"Ochotona"},
+  "Odocoileus": {"gloss":"hollow tooth","roots":[{"form":"odous","lang":"Greek","meaning":"tooth"},{"form":"koilos","lang":"Greek","meaning":"hollow"}],"note":"Rafinesque named the genus from fossil teeth found in a Pennsylvania cave"},
+  "Odontophoridae": {"gloss":"tooth bearers","roots":[{"form":"odous","lang":"Greek","meaning":"tooth"},{"form":"phoros","lang":"Greek","meaning":"bearing, carrying"}],"note":"a notched bill"},
+  "olivacea": {"gloss":"olive-colored","roots":[{"form":"oliva","lang":"Latin","meaning":"olive"}]},
+  "Oncorhynchus": {"gloss":"hook snout","roots":[{"form":"onkos","lang":"Greek","meaning":"barb, hook"},{"form":"rhynchos","lang":"Greek","meaning":"snout, beak"}],"note":"the hooked jaw of spawning males"},
+  "Ondatra": {"gloss":"the Wendat name, kept","roots":[{"form":"ondathra","lang":"Wendat (Huron), through French","meaning":"the muskrat"}]},
+  "ordii": {"gloss":"Ord's","roots":[{"form":"George Ord","lang":"person","meaning":"Philadelphia naturalist"}]},
+  "ordinoides": {"gloss":"like ordinatus","roots":[{"form":"ordo","lang":"Latin","meaning":"row, order"},{"form":"-oeides","lang":"Greek","meaning":"resembling, having the form of"}],"note":"named for its likeness to another garter snake, the one in rows"},
+  "oregonensis": {"gloss":"of Oregon","roots":[{"form":"Oregon","lang":"place","meaning":""}]},
+  "Osmeridae": {"gloss":"","roots":[{"form":"osme","lang":"Greek","meaning":"smell, scent"}],"from":"Osmeriformes"},
+  "Osmeriformes": {"gloss":"the scented ones","roots":[{"form":"osme","lang":"Greek","meaning":"smell, scent"},{"form":"forma","lang":"Latin","meaning":"shape, form"}],"note":"fresh smelt smell of cucumber"},
+  "Osteichthyes": {"gloss":"bone fishes","roots":[{"form":"osteon","lang":"Greek","meaning":"bone"},{"form":"ichthys","lang":"Greek","meaning":"fish"}]},
+  "pacificus": {"gloss":"of the Pacific","roots":[{"form":"the Pacific","lang":"place","meaning":""}]},
+  "palustris": {"gloss":"of the marsh","roots":[{"form":"palus","lang":"Latin","meaning":"marsh, swamp"}]},
+  "Pandion": {"gloss":"Pandion","roots":[{"form":"Pandion","lang":"Greek","meaning":"king of Athens whose daughters were turned into birds"}]},
+  "Pandionidae": {"gloss":"","roots":[{"form":"Pandion","lang":"Greek","meaning":"king of Athens whose daughters were turned into birds"}],"from":"Pandion"},
+  "Parareptilia": {"gloss":"beside the reptiles","roots":[{"form":"para","lang":"Greek","meaning":"beside, near"},{"form":"repere","lang":"Latin","meaning":"to creep, crawl"}]},
+  "Paridae": {"gloss":"tits","roots":[{"form":"parus","lang":"Latin","meaning":"titmouse"}]},
+  "Passerellidae": {"gloss":"little sparrows","roots":[{"form":"passer","lang":"Latin","meaning":"sparrow"}]},
+  "Passeriformes": {"gloss":"sparrow-shaped","roots":[{"form":"passer","lang":"Latin","meaning":"sparrow"},{"form":"forma","lang":"Latin","meaning":"shape, form"}]},
+  "Patagioenas": {"gloss":"clattering pigeon","roots":[{"form":"patage","lang":"Greek","meaning":"clatter, noise"},{"form":"oinas","lang":"Greek","meaning":"wild pigeon"}],"note":"the wing clap on takeoff"},
+  "Pelecanidae": {"gloss":"","roots":[{"form":"pelekan","lang":"Greek","meaning":"pelican (from pelekys, an axe)"}],"from":"Pelecanus"},
+  "Pelecaniformes": {"gloss":"pelican-shaped","roots":[{"form":"pelekan","lang":"Greek","meaning":"pelican (from pelekys, an axe)"},{"form":"forma","lang":"Latin","meaning":"shape, form"}]},
+  "Pelecanus": {"gloss":"pelican","roots":[{"form":"pelekan","lang":"Greek","meaning":"pelican (from pelekys, an axe)"}]},
+  "pennanti": {"gloss":"Pennant's","roots":[{"form":"Thomas Pennant","lang":"person","meaning":"Welsh naturalist and writer"}]},
+  "Perca": {"gloss":"perch","roots":[{"form":"perke","lang":"Greek","meaning":"perch"}]},
+  "Percidae": {"gloss":"","roots":[{"form":"perke","lang":"Greek","meaning":"perch"}],"from":"Perca"},
+  "Perciformes": {"gloss":"perch-shaped","roots":[{"form":"perke","lang":"Greek","meaning":"perch"},{"form":"forma","lang":"Latin","meaning":"shape, form"}]},
+  "peregrinus": {"gloss":"wanderer","roots":[{"form":"peregrinus","lang":"Latin","meaning":"foreigner, wanderer"}]},
+  "Peromyscus": {"gloss":"booted little mouse","roots":[{"form":"pero","lang":"uncertain","meaning":"usually read as a boot (Latin pero), for the white feet; sometimes as a pouch (Greek pera)"},{"form":"mys","lang":"Greek","meaning":"mouse"}],"note":"the first half is disputed","unsure":true},
+  "Petromyzonti": {"gloss":"stone suckers","roots":[{"form":"petra","lang":"Greek","meaning":"rock, stone"},{"form":"myzein","lang":"Greek","meaning":"to suck"}],"note":"lampreys hold to rocks with the mouth"},
+  "Petromyzontidae": {"gloss":"","roots":[{"form":"petra","lang":"Greek","meaning":"rock, stone"},{"form":"myzein","lang":"Greek","meaning":"to suck"}],"from":"Petromyzonti"},
+  "Petromyzontiformes": {"gloss":"stone-sucker-shaped","roots":[{"form":"petra","lang":"Greek","meaning":"rock, stone"},{"form":"myzein","lang":"Greek","meaning":"to suck"},{"form":"forma","lang":"Latin","meaning":"shape, form"}]},
+  "Phalacrocoracidae": {"gloss":"bald ravens","roots":[{"form":"phalakros","lang":"Greek","meaning":"bald"},{"form":"korax","lang":"Greek","meaning":"raven"}]},
+  "Phasianidae": {"gloss":"pheasants","roots":[{"form":"phasianos","lang":"Greek","meaning":"bird of the river Phasis, in Colchis"}]},
+  "Phoebastria": {"gloss":"prophetess","roots":[{"form":"phoibastria","lang":"Greek","meaning":"prophetess"}]},
+  "phoeniceus": {"gloss":"crimson","roots":[{"form":"phoinix","lang":"Greek","meaning":"crimson, Phoenician red"}]},
+  "Phrynosoma": {"gloss":"toad body","roots":[{"form":"phrynos","lang":"Greek","meaning":"toad"},{"form":"soma","lang":"Greek","meaning":"body"}],"note":"horned toad, in Greek"},
+  "Phrynosomatidae": {"gloss":"","roots":[{"form":"phrynos","lang":"Greek","meaning":"toad"},{"form":"soma","lang":"Greek","meaning":"body"}],"from":"Phrynosoma"},
+  "Picidae": {"gloss":"","roots":[{"form":"picus","lang":"Latin","meaning":"woodpecker; Picus, whom Circe turned into one"}],"from":"Piciformes"},
+  "Piciformes": {"gloss":"woodpecker-shaped","roots":[{"form":"picus","lang":"Latin","meaning":"woodpecker; Picus, whom Circe turned into one"},{"form":"forma","lang":"Latin","meaning":"shape, form"}]},
+  "picta": {"gloss":"painted","roots":[{"form":"pingere","lang":"Latin","meaning":"to paint"}]},
+  "pileatus": {"gloss":"capped","roots":[{"form":"pileus","lang":"Latin","meaning":"felt cap"}]},
+  "pipiens": {"gloss":"peeping","roots":[{"form":"pipire","lang":"Latin","meaning":"to peep, chirp"}]},
+  "Pipilo": {"gloss":"chirper","roots":[{"form":"pipire","lang":"Latin","meaning":"to peep, chirp"}]},
+  "Pituophis": {"gloss":"pine snake","roots":[{"form":"pitys","lang":"Greek","meaning":"pine"},{"form":"ophis","lang":"Greek","meaning":"snake"}]},
+  "Platichthys": {"gloss":"flat fish","roots":[{"form":"platys","lang":"Greek","meaning":"flat, broad"},{"form":"ichthys","lang":"Greek","meaning":"fish"}]},
+  "platyrhinos": {"gloss":"flat nose","roots":[{"form":"platys","lang":"Greek","meaning":"flat, broad"},{"form":"rhis","lang":"Greek","meaning":"nose"}]},
+  "platyrhynchos": {"gloss":"flat beak","roots":[{"form":"platys","lang":"Greek","meaning":"flat, broad"},{"form":"rhynchos","lang":"Greek","meaning":"snout, beak"}]},
+  "platyrhynchus": {"gloss":"flat snout","roots":[{"form":"platys","lang":"Greek","meaning":"flat, broad"},{"form":"rhynchos","lang":"Greek","meaning":"snout, beak"}]},
+  "Plestiodon": {"gloss":"very many teeth","roots":[{"form":"pleistos","lang":"Greek","meaning":"most, very many"},{"form":"odous","lang":"Greek","meaning":"tooth"}]},
+  "Plethodon": {"gloss":"full of teeth","roots":[{"form":"plethos","lang":"Greek","meaning":"a great number, fullness"},{"form":"odous","lang":"Greek","meaning":"tooth"}]},
+  "Plethodontidae": {"gloss":"","roots":[{"form":"plethos","lang":"Greek","meaning":"a great number, fullness"},{"form":"odous","lang":"Greek","meaning":"tooth"}],"from":"Plethodon"},
+  "Pleuronectidae": {"gloss":"","roots":[{"form":"pleura","lang":"Greek","meaning":"side, rib"},{"form":"nektos","lang":"Greek","meaning":"swimming"}],"from":"Pleuronectiformes"},
+  "Pleuronectiformes": {"gloss":"side swimmers","roots":[{"form":"pleura","lang":"Greek","meaning":"side, rib"},{"form":"nektos","lang":"Greek","meaning":"swimming"},{"form":"forma","lang":"Latin","meaning":"shape, form"}]},
+  "podiceps": {"gloss":"rump foot","roots":[{"form":"podex","lang":"Latin","meaning":"rump"},{"form":"pes","lang":"Latin","meaning":"foot"}]},
+  "Podicipedidae": {"gloss":"","roots":[{"form":"podex","lang":"Latin","meaning":"rump"},{"form":"pes","lang":"Latin","meaning":"foot"}],"from":"Podicipediformes"},
+  "Podicipediformes": {"gloss":"rump-foot-shaped","roots":[{"form":"podex","lang":"Latin","meaning":"rump"},{"form":"pes","lang":"Latin","meaning":"foot"},{"form":"forma","lang":"Latin","meaning":"shape, form"}],"note":"legs set at the very back"},
+  "Podilymbus": {"gloss":"rump diver","roots":[{"form":"podex","lang":"Latin","meaning":"rump"},{"form":"kolymbos","lang":"Greek","meaning":"diver"}],"note":"a blend of two older genus names, Podiceps and Colymbus"},
+  "Poecile": {"gloss":"dappled","roots":[{"form":"poikilos","lang":"Greek","meaning":"many-colored, dappled"}]},
+  "Pomoxis": {"gloss":"sharp lid","roots":[{"form":"poma","lang":"Greek","meaning":"lid, cover"},{"form":"oxys","lang":"Greek","meaning":"sharp"}],"note":"the gill cover ends in a point"},
+  "pretiosa": {"gloss":"precious","roots":[{"form":"pretium","lang":"Latin","meaning":"worth, price"}]},
+  "princeps": {"gloss":"chief","roots":[{"form":"princeps","lang":"Latin","meaning":"chief, first"}],"note":"Richardson translating a Chipewyan name, little chief hare"},
+  "Procellariidae": {"gloss":"","roots":[{"form":"procella","lang":"Latin","meaning":"storm, gale"}],"from":"Procellariiformes"},
+  "Procellariiformes": {"gloss":"storm birds","roots":[{"form":"procella","lang":"Latin","meaning":"storm, gale"},{"form":"forma","lang":"Latin","meaning":"shape, form"}]},
+  "Procyon": {"gloss":"before the dog","roots":[{"form":"pro","lang":"Greek","meaning":"before"},{"form":"kyon","lang":"Greek","meaning":"dog"}],"note":"also a star, the one that rises before the Dog Star"},
+  "Procyonidae": {"gloss":"","roots":[{"form":"pro","lang":"Greek","meaning":"before"},{"form":"kyon","lang":"Greek","meaning":"dog"}],"from":"Procyon"},
+  "Proteidae": {"gloss":"Proteus's kin","roots":[{"form":"Proteus","lang":"Greek","meaning":"the sea god who changes shape"}]},
+  "Psaltriparus": {"gloss":"harp-player tit","roots":[{"form":"psaltria","lang":"Greek","meaning":"a woman who plays the harp"},{"form":"parus","lang":"Latin","meaning":"titmouse"}]},
+  "Pseudacris": {"gloss":"false cricket","roots":[{"form":"pseudes","lang":"Greek","meaning":"false"},{"form":"akris","lang":"Greek","meaning":"locust, cricket"}],"note":"for the voice"},
+  "Ptychocheilus": {"gloss":"folded lip","roots":[{"form":"ptyche","lang":"Greek","meaning":"fold"},{"form":"cheilos","lang":"Greek","meaning":"lip"}]},
+  "pubescens": {"gloss":"downy","roots":[{"form":"pubes","lang":"Latin","meaning":"downy hair"}]},
+  "Puma": {"gloss":"the Quechua name, kept","roots":[{"form":"puma","lang":"Quechua","meaning":"the mountain lion"}]},
+  "punctatus": {"gloss":"dotted","roots":[{"form":"punctum","lang":"Latin","meaning":"point, small hole"}]},
+  "Raja": {"gloss":"ray","roots":[{"form":"raia","lang":"Latin","meaning":"ray, skate"}]},
+  "Rajidae": {"gloss":"","roots":[{"form":"raia","lang":"Latin","meaning":"ray, skate"}],"from":"Raja"},
+  "Rajiformes": {"gloss":"ray-shaped","roots":[{"form":"raia","lang":"Latin","meaning":"ray, skate"},{"form":"forma","lang":"Latin","meaning":"shape, form"}]},
+  "Rallidae": {"gloss":"rails","roots":[{"form":"rallus","lang":"Medieval Latin","meaning":"rail"}]},
+  "Rana": {"gloss":"frog","roots":[{"form":"rana","lang":"Latin","meaning":"frog"}]},
+  "Ranidae": {"gloss":"","roots":[{"form":"rana","lang":"Latin","meaning":"frog"}],"from":"Rana"},
+  "Recurvirostra": {"gloss":"bent-back beak","roots":[{"form":"recurvus","lang":"Latin","meaning":"bent back"},{"form":"rostrum","lang":"Latin","meaning":"beak"}]},
+  "Recurvirostridae": {"gloss":"","roots":[{"form":"recurvus","lang":"Latin","meaning":"bent back"},{"form":"rostrum","lang":"Latin","meaning":"beak"}],"from":"Recurvirostra"},
+  "regilla": {"gloss":"little royal one","roots":[{"form":"rex","lang":"Latin","meaning":"king"}]},
+  "Regulidae": {"gloss":"","roots":[{"form":"rex","lang":"Latin","meaning":"king"}],"from":"Regulus"},
+  "Regulus": {"gloss":"little king","roots":[{"form":"rex","lang":"Latin","meaning":"king"}]},
+  "Reptilia": {"gloss":"the creepers","roots":[{"form":"repere","lang":"Latin","meaning":"to creep, crawl"}]},
+  "reticulata": {"gloss":"netted","roots":[{"form":"reticulum","lang":"Latin","meaning":"little net"}]},
+  "Rhyacotriton": {"gloss":"torrent newt","roots":[{"form":"rhyax","lang":"Greek","meaning":"mountain stream, torrent"},{"form":"Triton","lang":"Greek","meaning":"a sea god, later the Greek word for newt"}]},
+  "Rhyacotritonidae": {"gloss":"","roots":[{"form":"rhyax","lang":"Greek","meaning":"mountain stream, torrent"},{"form":"Triton","lang":"Greek","meaning":"a sea god, later the Greek word for newt"}],"from":"Rhyacotriton"},
+  "Rhynchocephalia": {"gloss":"beak heads","roots":[{"form":"rhynchos","lang":"Greek","meaning":"snout, beak"},{"form":"kephale","lang":"Greek","meaning":"head"}]},
+  "Rodentia": {"gloss":"gnawers","roots":[{"form":"rodere","lang":"Latin","meaning":"to gnaw"}]},
+  "ruber": {"gloss":"red","roots":[{"form":"ruber","lang":"Latin","meaning":"red"}]},
+  "rufa": {"gloss":"red","roots":[{"form":"rufus","lang":"Latin","meaning":"red, reddish"}]},
+  "rufescens": {"gloss":"turning red","roots":[{"form":"rufus","lang":"Latin","meaning":"red, reddish"}]},
+  "rufus": {"gloss":"red","roots":[{"form":"rufus","lang":"Latin","meaning":"red, reddish"}]},
+  "Salamandridae": {"gloss":"salamanders","roots":[{"form":"salamandra","lang":"Greek","meaning":"salamander, said to live in fire"}]},
+  "Salmo": {"gloss":"salmon","roots":[{"form":"salmo","lang":"Latin","meaning":"salmon"}],"note":"often tied to salire, to leap, but that link is not secure","unsure":true},
+  "salmoides": {"gloss":"salmon-like","roots":[{"form":"salmo","lang":"Latin","meaning":"salmon"},{"form":"-oeides","lang":"Greek","meaning":"resembling, having the form of"}]},
+  "Salmonidae": {"gloss":"","roots":[{"form":"salmo","lang":"Latin","meaning":"salmon"}],"unsure":true,"from":"Salmo"},
+  "Salmoniformes": {"gloss":"salmon-shaped","roots":[{"form":"salmo","lang":"Latin","meaning":"salmon"},{"form":"forma","lang":"Latin","meaning":"shape, form"}]},
+  "Sarcopterygii": {"gloss":"flesh fins","roots":[{"form":"sarx","lang":"Greek","meaning":"flesh"},{"form":"pteryx","lang":"Greek","meaning":"wing, fin"}],"note":"the lobe-finned line that leads to everything with legs"},
+  "satrapa": {"gloss":"governor","roots":[{"form":"satrapes","lang":"Greek","meaning":"a Persian provincial governor"}],"note":"a ruler with a gold crown"},
+  "Scapanus": {"gloss":"digger","roots":[{"form":"skaptein","lang":"Greek","meaning":"to dig; skaphion, a spade"}],"note":"from skapane, a mattock"},
+  "Scaphiopodidae": {"gloss":"spade feet","roots":[{"form":"skaptein","lang":"Greek","meaning":"to dig; skaphion, a spade"},{"form":"pous","lang":"Greek","meaning":"foot"}]},
+  "Sceloporus": {"gloss":"pore leg","roots":[{"form":"skelos","lang":"Greek","meaning":"leg"},{"form":"poros","lang":"Greek","meaning":"pore, passage"}],"note":"the row of pores along the thigh"},
+  "Scincidae": {"gloss":"skinks","roots":[{"form":"skinkos","lang":"Greek","meaning":"a kind of lizard"}]},
+  "Sciuridae": {"gloss":"","roots":[{"form":"skia","lang":"Greek","meaning":"shadow"},{"form":"oura","lang":"Greek","meaning":"tail"}],"from":"Sciurus"},
+  "Sciurus": {"gloss":"shadow tail","roots":[{"form":"skia","lang":"Greek","meaning":"shadow"},{"form":"oura","lang":"Greek","meaning":"tail"}],"note":"it sits in the shade of its own tail"},
+  "Scorpaeniformes": {"gloss":"scorpionfish-shaped","roots":[{"form":"skorpaina","lang":"Greek","meaning":"a spiny, stinging fish (from skorpios, scorpion)"},{"form":"forma","lang":"Latin","meaning":"shape, form"}]},
+  "scripta": {"gloss":"written on","roots":[{"form":"scribere","lang":"Latin","meaning":"to write"}]},
+  "Selasphorus": {"gloss":"flame bearer","roots":[{"form":"selas","lang":"Greek","meaning":"flame, bright light"},{"form":"phoros","lang":"Greek","meaning":"bearing, carrying"}]},
+  "semiannulata": {"gloss":"half-ringed","roots":[{"form":"semi-","lang":"Latin","meaning":"half"},{"form":"anulus","lang":"Latin","meaning":"ring"}]},
+  "Serpentes": {"gloss":"snakes","roots":[{"form":"serpens","lang":"Latin","meaning":"snake, creeping thing"}]},
+  "serpentina": {"gloss":"snake-like","roots":[{"form":"serpens","lang":"Latin","meaning":"snake, creeping thing"}],"note":"the long neck and tail"},
+  "Siluriformes": {"gloss":"catfish-shaped","roots":[{"form":"silouros","lang":"Greek","meaning":"a large river fish, a catfish"},{"form":"forma","lang":"Latin","meaning":"shape, form"}]},
+  "Siphonopidae": {"gloss":"","roots":[{"form":"siphon","lang":"Greek","meaning":"tube, pipe"},{"form":"ops","lang":"Greek","meaning":"eye, face"}],"unsure":true,"from":"Siphonops"},
+  "Siphonops": {"gloss":"tube face","roots":[{"form":"siphon","lang":"Greek","meaning":"tube, pipe"},{"form":"ops","lang":"Greek","meaning":"eye, face"}],"note":"probably for the tentacle between eye and nostril","unsure":true},
+  "Siren": {"gloss":"siren","roots":[{"form":"Seiren","lang":"Greek","meaning":"the Sirens, whose song drew sailors in"}]},
+  "Sirenidae": {"gloss":"","roots":[{"form":"Seiren","lang":"Greek","meaning":"the Sirens, whose song drew sailors in"}],"from":"Siren"},
+  "sirtalis": {"gloss":"like a garter","roots":[{"form":"sirtalis","lang":"New Latin","meaning":"a word Linnaeus seems to have coined"}],"note":"the usual gloss, though the word is in no Latin dictionary; another guess is rope-like","unsure":true},
+  "Sitta": {"gloss":"nuthatch","roots":[{"form":"sitte","lang":"Greek","meaning":"a bird that pecks at bark, in Aristotle"}]},
+  "Sittidae": {"gloss":"","roots":[{"form":"sitte","lang":"Greek","meaning":"a bird that pecks at bark, in Aristotle"}],"from":"Sitta"},
+  "skiltonianus": {"gloss":"Skilton's","roots":[{"form":"Avery Judd Skilton","lang":"person","meaning":"physician and naturalist of Troy, New York"}]},
+  "Sonora": {"gloss":"Sonora","roots":[{"form":"Sonora","lang":"place","meaning":""}]},
+  "Sorex": {"gloss":"shrew","roots":[{"form":"sorex","lang":"Latin","meaning":"shrew"}]},
+  "Soricidae": {"gloss":"","roots":[{"form":"sorex","lang":"Latin","meaning":"shrew"}],"from":"Sorex"},
+  "sparverius": {"gloss":"sparrowhawk","roots":[{"form":"sparverius","lang":"Medieval Latin","meaning":"sparrowhawk"}]},
+  "Spatula": {"gloss":"spoon","roots":[{"form":"spatula","lang":"Latin","meaning":"broad blade, spoon"}]},
+  "Spea": {"gloss":"cave dweller","roots":[{"form":"speos","lang":"Greek","meaning":"cave, cavern"}],"note":"it spends most of its life underground"},
+  "Sphenodon": {"gloss":"wedge tooth","roots":[{"form":"sphen","lang":"Greek","meaning":"wedge"},{"form":"odous","lang":"Greek","meaning":"tooth"}]},
+  "Sphenodontidae": {"gloss":"","roots":[{"form":"sphen","lang":"Greek","meaning":"wedge"},{"form":"odous","lang":"Greek","meaning":"tooth"}],"from":"Sphenodon"},
+  "Sphyrapicus": {"gloss":"hammer woodpecker","roots":[{"form":"sphyra","lang":"Greek","meaning":"hammer"},{"form":"picus","lang":"Latin","meaning":"woodpecker; Picus, whom Circe turned into one"}]},
+  "Spinus": {"gloss":"finch","roots":[{"form":"spinos","lang":"Greek","meaning":"a small finch, in Aristophanes"}]},
+  "sponsa": {"gloss":"bride","roots":[{"form":"sponsa","lang":"Latin","meaning":"bride, betrothed"}],"note":"dressed for the wedding"},
+  "Squalidae": {"gloss":"","roots":[{"form":"squalus","lang":"Latin","meaning":"a kind of sea fish, a shark"}],"from":"Squalus"},
+  "Squaliformes": {"gloss":"shark-shaped","roots":[{"form":"squalus","lang":"Latin","meaning":"a kind of sea fish, a shark"},{"form":"forma","lang":"Latin","meaning":"shape, form"}]},
+  "Squalus": {"gloss":"shark","roots":[{"form":"squalus","lang":"Latin","meaning":"a kind of sea fish, a shark"}]},
+  "Squamata": {"gloss":"the scaled ones","roots":[{"form":"squama","lang":"Latin","meaning":"scale"}]},
+  "stansburiana": {"gloss":"Stansbury's","roots":[{"form":"Howard Stansbury","lang":"person","meaning":"army engineer who surveyed the Great Salt Lake"}]},
+  "stellatus": {"gloss":"starry","roots":[{"form":"stella","lang":"Latin","meaning":"star"}],"note":"star-shaped plates in the skin"},
+  "stelleri": {"gloss":"Steller's","roots":[{"form":"Georg Wilhelm Steller","lang":"person","meaning":"naturalist on Bering's voyage, first European to describe the bird"}]},
+  "stoutii": {"gloss":"Stout's","roots":[{"form":"Arthur B. Stout","lang":"person","meaning":"San Francisco surgeon, corresponding secretary of the California Academy of Sciences"}]},
+  "Strigidae": {"gloss":"","roots":[{"form":"strix","lang":"Greek","meaning":"owl, screecher (from strizo, to screech)"}],"from":"Strix"},
+  "Strigiformes": {"gloss":"owl-shaped","roots":[{"form":"strix","lang":"Greek","meaning":"owl, screecher (from strizo, to screech)"},{"form":"forma","lang":"Latin","meaning":"shape, form"}]},
+  "Strix": {"gloss":"screecher","roots":[{"form":"strix","lang":"Greek","meaning":"owl, screecher (from strizo, to screech)"}]},
+  "Sturnidae": {"gloss":"","roots":[{"form":"sturnus","lang":"Latin","meaning":"starling"}],"from":"Sturnus"},
+  "Sturnus": {"gloss":"starling","roots":[{"form":"sturnus","lang":"Latin","meaning":"starling"}]},
+  "Suliformes": {"gloss":"gannet-shaped","roots":[{"form":"sula","lang":"Old Norse","meaning":"gannet"},{"form":"forma","lang":"Latin","meaning":"shape, form"}]},
+  "Sylvilagus": {"gloss":"wood hare","roots":[{"form":"silva","lang":"Latin","meaning":"woodland"},{"form":"lagos","lang":"Greek","meaning":"hare"}]},
+  "taeniatus": {"gloss":"ribboned","roots":[{"form":"tainia","lang":"Greek","meaning":"ribbon, band"}]},
+  "Talpidae": {"gloss":"moles","roots":[{"form":"talpa","lang":"Latin","meaning":"mole"}]},
+  "Tamiasciurus": {"gloss":"storer squirrel","roots":[{"form":"tamias","lang":"Greek","meaning":"steward, one who stores and hands out"},{"form":"skia","lang":"Greek","meaning":"shadow"},{"form":"oura","lang":"Greek","meaning":"tail"}]},
+  "Taricha": {"gloss":"mummy","roots":[{"form":"tarichos","lang":"Greek","meaning":"a body preserved by drying or salting, a mummy"}],"note":"for the dry, rough skin"},
+  "Taxidea": {"gloss":"badger-shaped","roots":[{"form":"taxus","lang":"Late Latin, from Germanic","meaning":"badger"},{"form":"eidos","lang":"Greek","meaning":"form, shape"}]},
+  "taxus": {"gloss":"badger","roots":[{"form":"taxus","lang":"Late Latin, from Germanic","meaning":"badger"}]},
+  "Teiidae": {"gloss":"lizards, in Tupi","roots":[{"form":"teyu","lang":"Tupi","meaning":"lizard"}]},
+  "tenebrosus": {"gloss":"dark, gloomy","roots":[{"form":"tenebrae","lang":"Latin","meaning":"darkness"}]},
+  "tenuis": {"gloss":"slender","roots":[{"form":"tenuis","lang":"Latin","meaning":"thin, fine"}]},
+  "Testudines": {"gloss":"tortoises","roots":[{"form":"testudo","lang":"Latin","meaning":"tortoise (from testa, a shell or pot)"}]},
+  "Thaleichthys": {"gloss":"rich fish","roots":[{"form":"thaleia","lang":"Greek","meaning":"rich, abundant, blooming"},{"form":"ichthys","lang":"Greek","meaning":"fish"}],"note":"so full of oil that a dried eulachon will burn like a candle"},
+  "Thamnophis": {"gloss":"bush snake","roots":[{"form":"thamnos","lang":"Greek","meaning":"bush, shrub"},{"form":"ophis","lang":"Greek","meaning":"snake"}]},
+  "Thomomys": {"gloss":"heap mouse","roots":[{"form":"thomos","lang":"Greek","meaning":"heap"},{"form":"mys","lang":"Greek","meaning":"mouse"}],"note":"for the mounds"},
+  "tigrinum": {"gloss":"tiger-like","roots":[{"form":"tigris","lang":"Greek","meaning":"tiger"}]},
+  "tigris": {"gloss":"tiger","roots":[{"form":"tigris","lang":"Greek","meaning":"tiger"}]},
+  "torquata": {"gloss":"collared","roots":[{"form":"torques","lang":"Latin","meaning":"twisted neck chain, collar"}]},
+  "townsendii": {"gloss":"Townsend's","roots":[{"form":"John Kirk Townsend","lang":"person","meaning":"naturalist who came overland to Fort Vancouver in 1834"}]},
+  "Trachemys": {"gloss":"rough turtle","roots":[{"form":"trachys","lang":"Greek","meaning":"rough"},{"form":"emys","lang":"Greek","meaning":"freshwater turtle"}]},
+  "transmontanus": {"gloss":"from beyond the mountains","roots":[{"form":"trans","lang":"Latin","meaning":"across, beyond"},{"form":"mons","lang":"Latin","meaning":"mountain"}],"note":"beyond the Rockies, as seen from the east"},
+  "tridentatus": {"gloss":"three-toothed","roots":[{"form":"tres","lang":"Latin","meaning":"three"},{"form":"dens","lang":"Latin","meaning":"tooth"}]},
+  "tristis": {"gloss":"sad","roots":[{"form":"tristis","lang":"Latin","meaning":"sad"}],"note":"for the call"},
+  "Trochilidae": {"gloss":"an old bird name, reassigned","roots":[{"form":"trochilos","lang":"Greek","meaning":"a small running bird (from trechein, to run)"}]},
+  "truei": {"gloss":"True's","roots":[{"form":"Frederick W. True","lang":"person","meaning":"curator at the US National Museum"}]},
+  "tshawytscha": {"gloss":"the Kamchatkan name, kept","roots":[{"form":"chavycha","lang":"Russian, from a Kamchatkan language","meaning":"the Chinook salmon"}]},
+  "Turdidae": {"gloss":"","roots":[{"form":"turdus","lang":"Latin","meaning":"thrush"}],"from":"Turdus"},
+  "Turdus": {"gloss":"thrush","roots":[{"form":"turdus","lang":"Latin","meaning":"thrush"}]},
+  "Tyto": {"gloss":"owl","roots":[{"form":"tyto","lang":"Greek","meaning":"owl, from its call"}]},
+  "Tytonidae": {"gloss":"","roots":[{"form":"tyto","lang":"Greek","meaning":"owl, from its call"}],"from":"Tyto"},
+  "umbellus": {"gloss":"little parasol","roots":[{"form":"umbella","lang":"Latin","meaning":"sunshade, parasol"}],"note":"the neck ruff"},
+  "Uria": {"gloss":"waterbird","roots":[{"form":"ouria","lang":"Greek","meaning":"a waterbird in Athenaeus"}]},
+  "Urocitellus": {"gloss":"tailed ground squirrel","roots":[{"form":"oura","lang":"Greek","meaning":"tail"},{"form":"citellus","lang":"New Latin","meaning":"ground squirrel"}],"note":"the type species is the long-tailed ground squirrel","unsure":true},
+  "Urocyon": {"gloss":"tailed dog","roots":[{"form":"oura","lang":"Greek","meaning":"tail"},{"form":"kyon","lang":"Greek","meaning":"dog"}]},
+  "Urodela": {"gloss":"tail showing","roots":[{"form":"oura","lang":"Greek","meaning":"tail"},{"form":"delos","lang":"Greek","meaning":"visible, plain to see"}],"note":"the amphibians that keep their tails"},
+  "urophasianus": {"gloss":"tail pheasant","roots":[{"form":"oura","lang":"Greek","meaning":"tail"},{"form":"phasianos","lang":"Greek","meaning":"bird of the river Phasis, in Colchis"}]},
+  "Ursidae": {"gloss":"","roots":[{"form":"ursus","lang":"Latin","meaning":"bear"}],"from":"Ursus"},
+  "Ursus": {"gloss":"bear","roots":[{"form":"ursus","lang":"Latin","meaning":"bear"}]},
+  "Uta": {"gloss":"Utah","roots":[{"form":"Utah","lang":"place","meaning":""}]},
+  "varia": {"gloss":"mottled","roots":[{"form":"varius","lang":"Latin","meaning":"variegated, mottled"}]},
+  "vehiculum": {"gloss":"carrier","roots":[{"form":"vehiculum","lang":"Latin","meaning":"carriage, means of carrying"}],"note":"for the courting male, who carries the female along on his tail"},
+  "velox": {"gloss":"swift","roots":[{"form":"velox","lang":"Latin","meaning":"swift"}]},
+  "Vespertilionidae": {"gloss":"evening ones","roots":[{"form":"vesper","lang":"Latin","meaning":"evening"}],"note":"vespertilio, the Latin for bat"},
+  "villosus": {"gloss":"shaggy","roots":[{"form":"villus","lang":"Latin","meaning":"shaggy hair"}]},
+  "Viperidae": {"gloss":"vipers","roots":[{"form":"vipera","lang":"Latin","meaning":"viper"}]},
+  "virginianus": {"gloss":"of Virginia","roots":[{"form":"Virginia","lang":"place","meaning":""}]},
+  "viridis": {"gloss":"green","roots":[{"form":"viridis","lang":"Latin","meaning":"green"}]},
+  "vison": {"gloss":"mink","roots":[{"form":"vison","lang":"French","meaning":"mink"}]},
+  "vociferus": {"gloss":"voice-carrying, loud","roots":[{"form":"vox","lang":"Latin","meaning":"voice"},{"form":"ferre","lang":"Latin","meaning":"to carry, bear"}]},
+  "vulgaris": {"gloss":"common","roots":[{"form":"vulgus","lang":"Latin","meaning":"the common people"}]},
+  "Vulpes": {"gloss":"fox","roots":[{"form":"vulpes","lang":"Latin","meaning":"fox"}]},
+  "vulpes": {"gloss":"fox","roots":[{"form":"vulpes","lang":"Latin","meaning":"fox"}]},
+  "vulpinus": {"gloss":"fox-like","roots":[{"form":"vulpes","lang":"Latin","meaning":"fox"}]},
+  "wislizenii": {"gloss":"Wislizenus's","roots":[{"form":"Friedrich Adolph Wislizenus","lang":"person","meaning":"German-born physician who botanized the Southwest"}]},
+  "woodhousii": {"gloss":"Woodhouse's","roots":[{"form":"Samuel Washington Woodhouse","lang":"person","meaning":"surgeon and naturalist on the Sitgreaves expedition"}]},
+  "wrighti": {"gloss":"the Wrights'","roots":[{"form":"A. H. Wright and M. R. Wright","lang":"person","meaning":"Albert Hazen Wright of Cornell and a second Wright; Bishop named it for both"}],"note":"named for two people, so by the rules of Latin it should have been wrightorum"},
+  "yumanensis": {"gloss":"of Yuma","roots":[{"form":"Fort Yuma","lang":"place","meaning":""}]},
+  "Zenaida": {"gloss":"Zenaide's","roots":[{"form":"Zenaide Bonaparte","lang":"person","meaning":"princess, wife and cousin of the ornithologist Charles Lucien Bonaparte"}]},
+  "zibethicus": {"gloss":"musky","roots":[{"form":"zibethum","lang":"Medieval Latin, from Arabic","meaning":"civet, musk"}]},
+  "zonata": {"gloss":"belted","roots":[{"form":"zone","lang":"Greek","meaning":"belt, girdle"}]}
+};
+// ── NAMES:END ────────────────────────────────
+
 // ─────────────────────────────────────────────
 // SECTION 2: STATE
 // ─────────────────────────────────────────────
 
-let activeFilter = 'all';   // 'all' | 'fish' | 'birds' | 'mammals'
+let activeFilter = 'all';   // 'all' | 'fish' | 'amphibians' | 'reptiles' | 'birds' | 'mammals'
 let quizMode     = 'random'; // 'random' | 'targeted'
 let targetRank   = 'order';  // 'order' | 'class' | 'family'
 let score        = { correct: 0, total: 0 };
@@ -1030,7 +1756,7 @@ let currentQuestion = null;
 
 function setFilter(f) {
   activeFilter = f;
-  ['all','fish','birds','mammals'].forEach(id =>
+  ['all','fish','amphibians','reptiles','birds','mammals'].forEach(id =>
     document.getElementById('filter-' + id).classList.toggle('active', id === f)
   );
   renderTree();
@@ -1156,6 +1882,15 @@ function showDetail(path) {
     nameEl.className = 'bc-name';
     nameEl.textContent = node.name;
     row.appendChild(nameEl);
+
+    // A short translation of the name, for every rank above species
+    const meaning = NAMES[node.name];
+    if (meaning && meaning.gloss && node.rank !== 'species') {
+      const glossEl = document.createElement('span');
+      glossEl.className = 'bc-gloss';
+      glossEl.textContent = '“' + meaning.gloss + '”';
+      row.appendChild(glossEl);
+    }
     bc.appendChild(row);
 
     if (node.common && node.rank === 'species') {
@@ -1171,6 +1906,10 @@ function showDetail(path) {
   }
 
   panel.appendChild(bc);
+
+  // Take the selected name apart, one word at a time
+  const nameSection = buildNameMeaning(path[path.length - 1]);
+  if (nameSection) panel.appendChild(nameSection);
 
   // Show adaptations if the species has them
   const species = path[path.length - 1];
@@ -1191,6 +1930,70 @@ function showDetail(path) {
     }
     panel.appendChild(section);
   }
+}
+
+// buildNameMeaning returns the "What the name says" block for one node,
+// or null if there is nothing to say. A species name is two (sometimes three)
+// words, so we split it and look each word up in NAMES separately.
+function buildNameMeaning(node) {
+  const words = node.name.replace(' spp.', '').split(' ').filter(w => NAMES[w]);
+  if (words.length === 0 && !node.note) return null;
+
+  const section = document.createElement('div');
+  section.className = 'adaptations';
+
+  if (words.length > 0) {
+    const title = document.createElement('div');
+    title.className = 'adapt-title';
+    title.textContent = 'What the name says';
+    section.appendChild(title);
+  }
+
+  for (const word of words) {
+    const info = NAMES[word];
+
+    const line = document.createElement('div');
+    line.className = 'name-word';
+    const wordEl = document.createElement('span');
+    wordEl.className = 'nw-word';
+    wordEl.textContent = word;
+    line.appendChild(wordEl);
+    const glossEl = document.createElement('span');
+    glossEl.textContent = info.gloss || ('from ' + info.from);
+    line.appendChild(glossEl);
+    if (info.unsure) {
+      const flag = document.createElement('span');
+      flag.className = 'nw-unsure';
+      flag.textContent = '?';
+      flag.title = 'This etymology is uncertain or disputed';
+      line.appendChild(flag);
+    }
+    section.appendChild(line);
+
+    // .map turns each root into a string; .join glues them with a plus sign
+    const roots = document.createElement('div');
+    roots.className = 'name-roots';
+    roots.textContent = info.roots
+      .map(r => r.form + ' (' + r.lang + (r.meaning ? ': ' + r.meaning : '') + ')')
+      .join(' + ');
+    section.appendChild(roots);
+
+    if (info.note) {
+      const noteEl = document.createElement('div');
+      noteEl.className = 'name-roots';
+      noteEl.textContent = info.note.charAt(0).toUpperCase() + info.note.slice(1) + '.';
+      section.appendChild(noteEl);
+    }
+  }
+
+  if (node.note) {
+    const listNote = document.createElement('div');
+    listNote.className = 'adapt-item';
+    listNote.style.marginTop = '8px';
+    listNote.textContent = node.note;
+    section.appendChild(listNote);
+  }
+  return section;
 }
 
 // ─────────────────────────────────────────────
